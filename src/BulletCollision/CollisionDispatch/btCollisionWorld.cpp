@@ -34,7 +34,9 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 #include "BulletCollision/CollisionShapes/btConvexPolyhedron.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+
+// Peter removed GImpact because it was missing ; #include "BulletCollision/Gimpact/btGImpactShape.h"
+
 //#define DISABLE_DBVT_COMPOUNDSHAPE_RAYCAST_ACCELERATION
 
 
@@ -387,14 +389,15 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
 				triangleMesh->performRaycast(&rcb,rayFromLocal,rayToLocal);
 			}
-			else if(collisionShape->getShapeType()==GIMPACT_SHAPE_PROXYTYPE)
-			{
-				btGImpactMeshShape* concaveShape = (btGImpactMeshShape*)collisionShape;
-
-				BridgeTriangleRaycastCallback	rcb(rayFromLocal,rayToLocal,&resultCallback,collisionObjectWrap->getCollisionObject(),concaveShape, colObjWorldTransform);
-				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
-				concaveShape->processAllTrianglesRay(&rcb,rayFromLocal,rayToLocal);
-			}else
+// Peter removed GImpact because it was missing ;			else if(collisionShape->getShapeType()==GIMPACT_SHAPE_PROXYTYPE)
+// Peter removed GImpact because it was missing ;			{
+// Peter removed GImpact because it was missing ;				btGImpactMeshShape* concaveShape = (btGImpactMeshShape*)collisionShape;
+// Peter removed GImpact because it was missing ;
+// Peter removed GImpact because it was missing ;				BridgeTriangleRaycastCallback	rcb(rayFromLocal,rayToLocal,&resultCallback,collisionObjectWrap->getCollisionObject(),concaveShape, colObjWorldTransform);
+// Peter removed GImpact because it was missing ;				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
+// Peter removed GImpact because it was missing ;				concaveShape->processAllTrianglesRay(&rcb,rayFromLocal,rayToLocal);
+// Peter removed GImpact because it was missing ;			}
+			else
 			{
 				//generic (slower) case
 				btConcaveShape* concaveShape = (btConcaveShape*)collisionShape;
