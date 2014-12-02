@@ -9,6 +9,7 @@ project (Bullet)
 # We'll need this
 include_directories(src)
 
+
 add_library(
 	LinearMath
 		src/btBulletDynamicsCommon.h
@@ -332,3 +333,9 @@ add_library(
 		src/BulletDynamics/Vehicle/btVehicleRaycaster.h
 		src/BulletDynamics/Vehicle/btWheelInfo.cpp
 	)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+set_property(TARGET BulletCollision						PROPERTY FOLDER "Bullet")
+set_property(TARGET BulletDynamics						PROPERTY FOLDER "Bullet")
+set_property(TARGET LinearMath							PROPERTY FOLDER "Bullet")
