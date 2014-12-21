@@ -333,6 +333,7 @@ add_library(
 		src/BulletDynamics/Vehicle/btVehicleRaycaster.h
 		src/BulletDynamics/Vehicle/btWheelInfo.cpp
 	)
+	target_link_libraries(BulletDynamics BulletCollision)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
