@@ -30,7 +30,7 @@ trait TCreamer {
     override val nesting = +1
   }
 
-  case class Else() extends TSourceLine
+  // case class Else() extends TSourceLine
 
   case class DefineSource(file: String, line: Int, name: String) extends TSourceLine
 
