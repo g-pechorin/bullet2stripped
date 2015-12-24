@@ -685,6 +685,15 @@ public:
 		return m_floats[0] == btScalar(0) && m_floats[1] == btScalar(0) && m_floats[2] == btScalar(0);
 	}
 
+	SIMD_FORCE_INLINE bool isAlmostZero(void) const
+	{
+		if (fabsf(x()) > 1e-6 || fabsf(y()) > 1e-6 || fabsf(z()) > 1e-6)
+		{
+			return false;
+		}
+
+		return true;
+	}
 
 	SIMD_FORCE_INLINE bool fuzzyZero() const 
 	{

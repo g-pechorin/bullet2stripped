@@ -30,13 +30,6 @@ btConvexPolyhedron::~btConvexPolyhedron()
 
 }
 
-
-inline bool IsAlmostZero(const btVector3& v)
-{
-	if(fabsf(v.x())>1e-6 || fabsf(v.y())>1e-6 || fabsf(v.z())>1e-6)	return false;
-	return true;
-}
-
 struct btInternalVertexPair
 {
 	btInternalVertexPair(short int v0,short int v1)
@@ -123,8 +116,7 @@ void	btConvexPolyhedron::initialize()
 			for (int p=0;p<m_uniqueEdges.size();p++)
 			{
 				
-				if (IsAlmostZero(m_uniqueEdges[p]-edge) || 
-					IsAlmostZero(m_uniqueEdges[p]+edge))
+				if ((m_uniqueEdges[p] - edge).isAlmostZero() || (m_uniqueEdges[p] + edge).isAlmostZero())
 				{
 					found = true;
 					break;

@@ -114,12 +114,6 @@ static bool TestSepAxis(const btConvexPolyhedron& hullA, const btConvexPolyhedro
 
 static int gActualSATPairTests=0;
 
-inline bool IsAlmostZero(const btVector3& v)
-{
-	if(fabsf(v.x())>1e-6 || fabsf(v.y())>1e-6 || fabsf(v.z())>1e-6)	return false;
-	return true;
-}
-
 #ifdef TEST_INTERNAL_OBJECTS
 
 inline void BoxSupport(const btScalar extents[3], const btScalar sv[3], btScalar p[3])
@@ -329,7 +323,7 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 
 			btVector3 Cross = WorldEdge0.cross(WorldEdge1);
 			curEdgeEdge++;
-			if(!IsAlmostZero(Cross))
+			if (!(Cross.isAlmostZero()))
 			{
 				Cross = Cross.normalize();
 				if (DeltaC2.dot(Cross)<0)
