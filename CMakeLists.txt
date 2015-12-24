@@ -3,8 +3,21 @@ cmake_minimum_required (VERSION 2.8)
 # In true "simple/lite/slob" manner I'm eschewing the complexities of Bullet2.8.3 to use this dumbed down version
 # ... which may or may not work
 
+#
+# test programs are at the end
+#
 
 project (Bullet)
+
+if(WIN32)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+else(WIN32)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11 -static-libstdc++")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
+endif(WIN32)
+
+add_definitions(-DCMAKE_BINARY_DIR="${CMAKE_BINARY_DIR}") 
+add_definitions(-DCMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}") 
 
 # We'll need this
 include_directories(src)
@@ -340,3 +353,23 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(TARGET BulletCollision						PROPERTY FOLDER "Bullet")
 set_property(TARGET BulletDynamics						PROPERTY FOLDER "Bullet")
 set_property(TARGET LinearMath							PROPERTY FOLDER "Bullet")
+
+
+
+
+add_executable(
+	bullettry-static
+		test/bullettry.cpp
+	)
+	set_target_properties(bullettry-static PROPERTIES COMPILE_DEFINITIONS "BULLETTRY_STATIC")
+	target_link_libraries(bullettry-static LinearMath BulletDynamics BulletCollision)
+
+if (EXISTS ${CMAKE_SOURCE_DIR}/scala-script/target/palBullet282.hpp)
+	include_directories(scala-script/target/)
+	add_executable(
+		bullettry-single
+			test/bullettry.cpp
+			scala-script/target/palBullet282.hpp
+		)
+		set_target_properties(bullettry-single PROPERTIES COMPILE_DEFINITIONS "BULLETTRY_SINGLE")
+endif()

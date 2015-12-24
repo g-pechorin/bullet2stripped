@@ -17,4 +17,4 @@ The entry point is `[peterlavalle.shoo.Bullet](src/main/scala/peterlavalle/shoo/
 	* `~ runMain peterlavalle.shoo.Bullet`
 * use `try.bullet` with CMake to see what's going on
 
- 
+It currently "forces" some includes to get around my limited pre-processor.

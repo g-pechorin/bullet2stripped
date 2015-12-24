@@ -13,7 +13,12 @@ object Bullet extends App {
     )
 
   val txt = "palBullet282"
-  val inc = List("BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h", "btBulletCollisionCommon.h", "btBulletDynamicsCommon.h", "LinearMath/btQuickprof.h")
+  val inc = List(
+    "BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h", // this gets hidden behind a deadblock naturally
+    "btBulletCollisionCommon.h",
+    "btBulletDynamicsCommon.h",
+    "LinearMath/btQuickprof.h" // this gets hidden behind a deadblock naturally
+  )
   
   
   val src = searchPaths.listing("([\\.\\w]+/)*[\\.\\w]+\\.c(pp)?")
