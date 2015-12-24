@@ -31,9 +31,9 @@ m_convexA(convexA),m_convexB(convexB)
 ///Typically the conservative advancement reaches solution in a few iterations, clip it to 32 for degenerate cases.
 ///See discussion about this here http://continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=565
 #ifdef BT_USE_DOUBLE_PRECISION
-#define MAX_ITERATIONS 64
+#define btSubSimplexConvexCast_MAX_ITERATIONS 64
 #else
-#define MAX_ITERATIONS 32
+#define btSubSimplexConvexCast_MAX_ITERATIONS 32
 #endif
 bool	btSubsimplexConvexCast::calcTimeOfImpact(
 		const btTransform& fromA,
@@ -61,7 +61,7 @@ bool	btSubsimplexConvexCast::calcTimeOfImpact(
 	btVector3 supVertexA = fromA(m_convexA->localGetSupportingVertex(-r*fromA.getBasis()));
 	btVector3 supVertexB = fromB(m_convexB->localGetSupportingVertex(r*fromB.getBasis()));
 	v = supVertexA-supVertexB;
-	int maxIter = MAX_ITERATIONS;
+	int maxIter = btSubSimplexConvexCast_MAX_ITERATIONS;
 
 	btVector3 n;
 	n.setValue(btScalar(0.),btScalar(0.),btScalar(0.));

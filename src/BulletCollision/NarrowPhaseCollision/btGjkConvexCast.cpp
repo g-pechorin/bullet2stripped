@@ -22,9 +22,9 @@ subject to the following restrictions:
 #include "LinearMath/btTransformUtil.h"
 
 #ifdef BT_USE_DOUBLE_PRECISION
-#define MAX_ITERATIONS 64
+#define btGjkConvexCast_MAX_ITERATIONS 64
 #else
-#define MAX_ITERATIONS 32
+#define btGjkConvexCast_MAX_ITERATIONS 32
 #endif
 
 btGjkConvexCast::btGjkConvexCast(const btConvexShape* convexA,const btConvexShape* convexB,btSimplexSolverInterface* simplexSolver)
@@ -55,7 +55,7 @@ bool	btGjkConvexCast::calcTimeOfImpact(
 	btScalar lambda = btScalar(0.);
 	btVector3 v(1,0,0);
 
-	int maxIter = MAX_ITERATIONS;
+	int maxIter = btGjkConvexCast_MAX_ITERATIONS;
 
 	btVector3 n;
 	n.setValue(btScalar(0.),btScalar(0.),btScalar(0.));

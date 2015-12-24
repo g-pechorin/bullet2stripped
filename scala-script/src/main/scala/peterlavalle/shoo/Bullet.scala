@@ -14,13 +14,17 @@ object Bullet extends App {
 
   val txt = "palBullet282"
   val inc = List(
-    "BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h", // this gets hidden behind a deadblock naturally
+
+    // this gets hidden behind a deadblock - so it's forced here
+    "BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h",
+
     "btBulletCollisionCommon.h",
     "btBulletDynamicsCommon.h",
-    "LinearMath/btQuickprof.h" // this gets hidden behind a deadblock naturally
+
+    // this gets hidden behind a deadblock - so it's forced here
+    "LinearMath/btQuickprof.h"
   )
-  
-  
+
   val src = searchPaths.listing("([\\.\\w]+/)*[\\.\\w]+\\.c(pp)?")
 
   def makeStreams(todo: List[String]): Stream[SourceLine] = {
