@@ -24,4 +24,34 @@ class SearchPaths(roots: List[File]) {
           null
     }
   }
+
+  def listing(pattern: String): List[String] =
+    roots.foldLeft(Set[String]()) {
+      case (found, root) =>
+
+        def recur(done: Set[String], list: List[String]): Set[String] =
+          list match {
+            case Nil =>
+              done
+
+            case name :: tail =>
+              val file = new File(root, name)
+
+              val (okay, next) =
+                if (file.isFile)
+                  if (name.matches(pattern))
+                    (done + name, tail)
+                  else
+                    (done, tail)
+                else {
+                  require(file.isDirectory)
+
+                  (done, file.list().map(name + "/" + _).foldRight(tail)(_ :: _))
+                }
+
+              recur(okay, next)
+          }
+
+        recur(found, root.list().toList)
+    }.toList.sorted
 }
