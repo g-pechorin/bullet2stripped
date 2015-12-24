@@ -87,14 +87,14 @@ struct btVectorX
 				
 				for (int ix=0;ix<nn;ix++)
 				{
-					if ((*this)[ix] != 0.0)
+					if ((*this)[ix] != T(0.0))
 					{
 						T absxi = btFabs((*this)[ix]);
 						if (scale < absxi)
 						{
 							T temp;
 							temp = scale / absxi;
-							ssq = ssq * (temp * temp) + 1.0;
+							ssq = ssq * (temp * temp) + T(1.0);
 							scale = absxi;
 						}
 						else
