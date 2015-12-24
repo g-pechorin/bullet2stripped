@@ -64,7 +64,7 @@ object Bullet extends App {
     streams.foldLeft((writer, -1, "-1")) {
       case ((lastWriter: Writer, lastLine: Int, lastName: String), SourceLine(sourceName: String, sourceLine: Int, sourceText: String)) =>
         ((if (lastLine != sourceLine || lastName != sourceName)
-          lastWriter.append("///#line %d \"%s\"\n".format(sourceLine, sourceName))
+          lastWriter.append("#line %d \"%s\"\n".format(sourceLine, sourceName))
         else
           lastWriter).append(sourceText).append("\n"), sourceLine + 1, sourceName)
     }._1
