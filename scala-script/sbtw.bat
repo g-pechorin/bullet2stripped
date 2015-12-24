@@ -1,6 +1,1 @@
-
-@ECHO OFF
-SET CMD_LINE_ARGS=%$
-SET PATH=sbtw/bin:%PATH%
-sbt %2 %*
-      
+@sbtw/bin/sbt %2 %*

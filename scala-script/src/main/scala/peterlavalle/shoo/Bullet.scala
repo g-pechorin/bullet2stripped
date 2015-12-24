@@ -12,7 +12,7 @@ object Bullet extends App {
       new File("../src").getAbsoluteFile
     )
 
-  val txt = "Bullet"
+  val txt = "palBullet282"
   val inc = List("btBulletCollisionCommon.h", "btBulletDynamicsCommon.h")
   val src = searchPaths.listing("([\\.\\w]+/)*[\\.\\w]+\\.c(pp)?")
 
@@ -30,21 +30,16 @@ object Bullet extends App {
     recur(todo)
   }
 
-  val rawStream = makeStreams(inc)
-
-
-  val visited = new util.HashSet[String]()
-
   def cookStreams(filter: (String => Boolean), data: Stream[SourceLine]): Stream[SourceLine] = {
 
-    val rInclude = "\\s*#\\s*include\\s*\"([^\"]+)\"\\s*".r
+    val rInclude = "\\s*#\\s*include\\s*\"([^\"]+)\"\\s*(//.*)?".r
 
     def recur(todo: Stream[SourceLine]): Stream[SourceLine] =
       todo match {
         case Empty =>
           Empty
 
-        case SourceLine(_, _, rInclude(include)) #:: tail =>
+        case SourceLine(_, _, rInclude(include, _)) #:: tail =>
           val path: String =
             todo.head.find(include) match {
               case Some(h) if searchPaths ? h => h
@@ -65,22 +60,26 @@ object Bullet extends App {
     recur(data)
   }
 
-  val outStream = cookStreams(p => !visited.add(p), rawStream)
-
-  val (writer, _, _) =
-    outStream.foldLeft((new FileWriter("target/%s.hpp".format(txt)).asInstanceOf[Writer], -1, "-1")) {
+  def writeOut(writer: Writer, streams: Stream[SourceLine]): Writer =
+    streams.foldLeft((writer, -1, "-1")) {
       case ((lastWriter: Writer, lastLine: Int, lastName: String), SourceLine(sourceName: String, sourceLine: Int, sourceText: String)) =>
         ((if (lastLine != sourceLine || lastName != sourceName)
-          lastWriter.append("#pragma %d \"%s\"\n".format(sourceLine, sourceName))
+          lastWriter.append("///#line %d \"%s\"\n".format(sourceLine, sourceName))
         else
           lastWriter).append(sourceText).append("\n"), sourceLine + 1, sourceName)
-    }
+    }._1
 
-  cookStreams(p => !visited.add(p), makeStreams(src)).foldLeft((writer.append("#ifdef %s_CPP\n".format(txt)), -1, "-1")) {
-    case ((lastWriter: Writer, lastLine: Int, lastName: String), SourceLine(sourceName: String, sourceLine: Int, sourceText: String)) =>
-      ((if (lastLine != sourceLine || lastName != sourceName)
-        lastWriter.append("#pragma %d \"%s\"\n".format(sourceLine, sourceName))
-      else
-        lastWriter).append(sourceText).append("\n"), sourceLine + 1, sourceName)
-  }._1.append("#enfif // %s_CPP\n".format(txt)).close()
+  // HACK ; guard against multiple inclusion
+  val visited = new util.HashSet[String]()
+
+  val writer = new FileWriter("target/%s.hpp".format(txt))
+
+  // write the header section
+  writeOut(writer, cookStreams(p => !visited.add(p), makeStreams(inc)))
+
+  // write the body
+  writer.append("#ifdef %s_CPP\n".format(txt.toUpperCase))
+  writeOut(writer,  cookStreams(p => !visited.add(p), makeStreams(src)))
+  writer.append("#endif // %s_CPP\n".format(txt.toUpperCase)).close()
+
 }

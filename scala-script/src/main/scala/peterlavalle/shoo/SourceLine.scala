@@ -32,7 +32,7 @@ object SourceLine {
       .zipWithIndex
       .map {
         case (text, line) =>
-          SourceLine(name, line, text)
+          SourceLine(name, line + 1, text)
       }
 
 }

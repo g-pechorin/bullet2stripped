@@ -54,15 +54,7 @@ TaskKey[Unit]("sbtWrapper", "Downloads SBT") := {
 
   // write sbtw.bat
   new java.io.FileWriter("sbtw.bat")
-    .append(
-      """
-      |@ECHO OFF
-      |SET CMD_LINE_ARGS=%$
-      |SET PATH=sbtw/bin:%PATH%
-      |sbt %2 %*
-      """
-      .stripMargin
-    )
+    .append("@sbtw/bin/sbt.bat %2 %*")
     .close
 
   println("TODO ; write sbtw (.sh)")
