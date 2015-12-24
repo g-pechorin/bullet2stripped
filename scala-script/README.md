@@ -2,7 +2,7 @@ Toy that chews up Bullet 2.82 and spits out a single header
 
 ... which doesn't build **YET**
 
-**Because (I think that)** the pre-processor inclusion thing gets some of the headers trapped behind directive blocks that're inactive
+**Because (I think that)** some symbols are defined in multiple places (probably relying on the `static` keyword)
 
 
 Might be useful for other projects with not-lemon build configurations

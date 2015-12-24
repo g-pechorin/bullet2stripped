@@ -13,7 +13,9 @@ object Bullet extends App {
     )
 
   val txt = "palBullet282"
-  val inc = List("btBulletCollisionCommon.h", "btBulletDynamicsCommon.h")
+  val inc = List("BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h", "btBulletCollisionCommon.h", "btBulletDynamicsCommon.h", "LinearMath/btQuickprof.h")
+  
+  
   val src = searchPaths.listing("([\\.\\w]+/)*[\\.\\w]+\\.c(pp)?")
 
   def makeStreams(todo: List[String]): Stream[SourceLine] = {
