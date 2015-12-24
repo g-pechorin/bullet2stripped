@@ -84,6 +84,10 @@ object Bullet extends App {
   val visited = new util.HashSet[String]()
 
   val writer = new FileWriter("target/%s.hpp".format(txt))
+    .append("// Bullet 2.82 piled into a single file using a script by Peter LaValle (at Nottingham)\n")
+    .append("// see ; https://github.com/g-pechorin/bullet2stripped\n")
+    .append("\n")
+
 
   // write the header section
   writeOut(writer, cookStreams(p => !visited.add(p), makeStreams(inc)))
