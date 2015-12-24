@@ -38,20 +38,16 @@ object Bullet extends App {
           Empty
 
         case SourceLine(_, _, rInclude(include)) #:: tail =>
-          val data: Stream[SourceLine] =
+          val path: String =
             todo.head.find(include) match {
-              case Some(list) =>
-
-                // find the first name that leads to a stream
-                val (name: String, stream: InputStream) = {
-                  ("", ???)
-                }
-
-
-                SourceLine.formStream(name, stream)
+              case Some(inc) if searchPaths ? inc => inc
+              case _ => include
             }
 
-          recur(data ++ tail)
+          if (searchPaths ? path)
+            recur(SourceLine.formStream(path, searchPaths(path)) ++ tail)
+          else
+            todo.head #:: recur(tail)
 
         case head #:: tail =>
           head #:: recur(tail)
@@ -60,12 +56,13 @@ object Bullet extends App {
     recur(rawStream)
   }
 
-  outStream.foldLeft((new FileWriter("target/bullet.hpp").asInstanceOf[Writer], -1, "-1")) {
-    case ((lastWriter: Writer, lastLine: Int, lastName: String), SourceLine(sourceName: String, sourceLine: Int, sourceText: String)) =>
-      ((if (lastLine != sourceLine || lastName != sourceName)
-        lastWriter.append("#pragma %d \"%s\"\n".format(sourceLine, sourceName))
-      else
-        lastWriter).append(sourceText).append("\n"), sourceLine + 1, sourceName)
-  }
-    ._1.close()
+  val (writer, _, _) =
+    outStream.foldLeft((new FileWriter("target/bullet.hpp").asInstanceOf[Writer], -1, "-1")) {
+      case ((lastWriter: Writer, lastLine: Int, lastName: String), SourceLine(sourceName: String, sourceLine: Int, sourceText: String)) =>
+        ((if (lastLine != sourceLine || lastName != sourceName)
+          lastWriter.append("#pragma %d \"%s\"\n".format(sourceLine, sourceName))
+        else
+          lastWriter).append(sourceText).append("\n"), sourceLine + 1, sourceName)
+    }
+  writer.close()
 }

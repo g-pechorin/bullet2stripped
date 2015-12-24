@@ -43,7 +43,7 @@ class SourceLineTest extends TestCase {
 
   def testDoPath(): Unit = {
     assertEquals(
-      Some(List("foo/btVector3.h", "btVector3.h")),
+      Some("foo/btVector3.h"),
       SourceLine("foo/goo", 0, "").find("btVector3.h")
     )
   }

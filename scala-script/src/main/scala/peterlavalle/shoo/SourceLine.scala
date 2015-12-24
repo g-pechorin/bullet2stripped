@@ -2,18 +2,18 @@ package peterlavalle.shoo
 
 import java.io.InputStream
 
-import scala.io.{Source}
+import scala.io.Source
 
 case class SourceLine(name: String, line: Int, text: String) {
   require(name.matches("(\\.\\./)*([\\w\\.]+/)*[\\w\\.]+"))
 
-  def find(path: String): Option[List[String]] = {
+  def find(path: String): Option[String] = {
     require(path.matches("(\\.\\./)*([\\w\\.]+/)*[\\w\\.]+"))
 
-    def refine(string: String): Option[List[String]] = {
+    def refine(string: String): Option[String] = {
       string.replaceAll("([\\w\\.]+)(/[\\w\\.]+/\\.\\./)([\\w\\.]+)", "$1/$3") match {
         case same if same == string =>
-          Some(List(string, path))
+          Some(string)
         case other =>
           ???
       }
