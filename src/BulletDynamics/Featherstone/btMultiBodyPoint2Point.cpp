@@ -4,8 +4,8 @@ Copyright (c) 2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -97,7 +97,7 @@ void btMultiBodyPoint2Point::createConstraintRows(btMultiBodyConstraintArray& co
 
 		constraintRow.m_solverBodyIdA = data.m_fixedBodyId;
 		constraintRow.m_solverBodyIdB = data.m_fixedBodyId;
-		
+
 
 		btVector3 contactNormalOnB(0,0,0);
 		contactNormalOnB[i] = -1;
@@ -108,7 +108,7 @@ void btMultiBodyPoint2Point::createConstraintRows(btMultiBodyConstraintArray& co
 		btVector3 pivotAworld = m_pivotInA;
 		if (m_rigidBodyA)
 		{
-			
+
 			constraintRow.m_solverBodyIdA = m_rigidBodyA->getCompanionId();
 			pivotAworld = m_rigidBodyA->getCenterOfMassTransform()*m_pivotInA;
 		} else
@@ -125,13 +125,13 @@ void btMultiBodyPoint2Point::createConstraintRows(btMultiBodyConstraintArray& co
 		{
 			if (m_bodyB)
 				pivotBworld = m_bodyB->localPosToWorld(m_linkB, m_pivotInB);
-			
+
 		}
 		btScalar position = (pivotAworld-pivotBworld).dot(contactNormalOnB);
 		btScalar relaxation = 1.f;
 		fillMultiBodyConstraintMixed(constraintRow, data,
 																 contactNormalOnB,
-																 pivotAworld, pivotBworld, 
+																 pivotAworld, pivotBworld,
 																 position,
 																 infoGlobal,
 																 relaxation,

@@ -4,8 +4,8 @@ btConeTwistConstraint is Copyright (c) 2007 Starbreeze Studios
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -38,7 +38,7 @@ SIMD_FORCE_INLINE btScalar computeAngularImpulseDenominator(const btVector3& axi
 
 
 
-btConeTwistConstraint::btConeTwistConstraint(btRigidBody& rbA,btRigidBody& rbB, 
+btConeTwistConstraint::btConeTwistConstraint(btRigidBody& rbA,btRigidBody& rbB,
 											 const btTransform& rbAFrame,const btTransform& rbBFrame)
 											 :btTypedConstraint(CONETWIST_CONSTRAINT_TYPE, rbA,rbB),m_rbAFrame(rbAFrame),m_rbBFrame(rbBFrame),
 											 m_angularOnly(false),
@@ -54,7 +54,7 @@ btConeTwistConstraint::btConeTwistConstraint(btRigidBody& rbA,const btTransform&
 {
 	m_rbBFrame = m_rbAFrame;
 	m_rbBFrame.setOrigin(btVector3(0., 0., 0.));
-	init();	
+	init();
 }
 
 
@@ -82,7 +82,7 @@ void btConeTwistConstraint::getInfo1 (btConstraintInfo1* info)
 	{
 		info->m_numConstraintRows = 0;
 		info->nub = 0;
-	} 
+	}
 	else
 	{
 		info->m_numConstraintRows = 3;
@@ -111,9 +111,9 @@ void btConeTwistConstraint::getInfo1NonVirtual (btConstraintInfo1* info)
 	//always reserve 6 rows: object transform is not available on SPU
 	info->m_numConstraintRows = 6;
 	info->nub = 0;
-		
+
 }
-	
+
 
 void btConeTwistConstraint::getInfo2 (btConstraintInfo2* info)
 {
@@ -123,12 +123,12 @@ void btConeTwistConstraint::getInfo2 (btConstraintInfo2* info)
 void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const btTransform& transA,const btTransform& transB,const btMatrix3x3& invInertiaWorldA,const btMatrix3x3& invInertiaWorldB)
 {
 	calcAngleInfo2(transA,transB,invInertiaWorldA,invInertiaWorldB);
-	
+
 	btAssert(!m_useSolveConstraintObsolete);
-    // set jacobian
-    info->m_J1linearAxis[0] = 1;
-    info->m_J1linearAxis[info->rowskip+1] = 1;
-    info->m_J1linearAxis[2*info->rowskip+2] = 1;
+	// set jacobian
+	info->m_J1linearAxis[0] = 1;
+	info->m_J1linearAxis[info->rowskip+1] = 1;
+	info->m_J1linearAxis[2*info->rowskip+2] = 1;
 	btVector3 a1 = transA.getBasis() * m_rbAFrame.getOrigin();
 	{
 		btVector3* angular0 = (btVector3*)(info->m_J1angularAxis);
@@ -137,9 +137,9 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 		btVector3 a1neg = -a1;
 		a1neg.getSkewSymmetricMatrix(angular0,angular1,angular2);
 	}
-    info->m_J2linearAxis[0] = -1;
-    info->m_J2linearAxis[info->rowskip+1] = -1;
-    info->m_J2linearAxis[2*info->rowskip+2] = -1;
+	info->m_J2linearAxis[0] = -1;
+	info->m_J2linearAxis[info->rowskip+1] = -1;
+	info->m_J2linearAxis[2*info->rowskip+2] = -1;
 	btVector3 a2 = transB.getBasis() * m_rbBFrame.getOrigin();
 	{
 		btVector3* angular0 = (btVector3*)(info->m_J2angularAxis);
@@ -147,22 +147,22 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 		btVector3* angular2 = (btVector3*)(info->m_J2angularAxis+2*info->rowskip);
 		a2.getSkewSymmetricMatrix(angular0,angular1,angular2);
 	}
-    // set right hand side
+	// set right hand side
 	btScalar linERP = (m_flags & BT_CONETWIST_FLAGS_LIN_ERP) ? m_linERP : info->erp;
-    btScalar k = info->fps * linERP;
-    int j;
+	btScalar k = info->fps * linERP;
+	int j;
 	for (j=0; j<3; j++)
-    {
-        info->m_constraintError[j*info->rowskip] = k * (a2[j] + transB.getOrigin()[j] - a1[j] - transA.getOrigin()[j]);
+	{
+		info->m_constraintError[j*info->rowskip] = k * (a2[j] + transB.getOrigin()[j] - a1[j] - transA.getOrigin()[j]);
 		info->m_lowerLimit[j*info->rowskip] = -SIMD_INFINITY;
 		info->m_upperLimit[j*info->rowskip] = SIMD_INFINITY;
 		if(m_flags & BT_CONETWIST_FLAGS_LIN_CFM)
 		{
 			info->cfm[j*info->rowskip] = m_linCFM;
 		}
-    }
+	}
 	int row = 3;
-    int srow = row * info->rowskip;
+	int srow = row * info->rowskip;
 	btVector3 ax1;
 	// angular limits
 	if(m_solveSwingLimit)
@@ -242,12 +242,12 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 			{
 				info->m_lowerLimit[srow] = 0;
 				info->m_upperLimit[srow] = SIMD_INFINITY;
-			} 
+			}
 			else
 			{
 				info->m_lowerLimit[srow] = -SIMD_INFINITY;
 				info->m_upperLimit[srow] = 0;
-			} 
+			}
 		}
 		else
 		{
@@ -257,7 +257,7 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 		srow += info->rowskip;
 	}
 }
-	
+
 
 
 void	btConeTwistConstraint::buildJacobian()
@@ -321,7 +321,7 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 		//linear part
 		if (!m_angularOnly)
 		{
-			btVector3 rel_pos1 = pivotAInW - m_rbA.getCenterOfMassPosition(); 
+			btVector3 rel_pos1 = pivotAInW - m_rbA.getCenterOfMassPosition();
 			btVector3 rel_pos2 = pivotBInW - m_rbB.getCenterOfMassPosition();
 
 			btVector3 vel1;
@@ -331,7 +331,7 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 			btVector3 vel = vel1 - vel2;
 
 			for (int i=0;i<3;i++)
-			{		
+			{
 				const btVector3& normal = m_jac[i].m_linearJointAxis;
 				btScalar jacDiagABInv = btScalar(1.) / m_jac[i].getDiagonal();
 
@@ -341,12 +341,12 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 				btScalar depth = -(pivotAInW - pivotBInW).dot(normal); //this is the error projected on the normal
 				btScalar impulse = depth*tau/timeStep  * jacDiagABInv -  rel_vel * jacDiagABInv;
 				m_appliedImpulse += impulse;
-				
+
 				btVector3 ftorqueAxis1 = rel_pos1.cross(normal);
 				btVector3 ftorqueAxis2 = rel_pos2.cross(normal);
 				bodyA.internalApplyImpulse(normal*m_rbA.getInvMass(), m_rbA.getInvInertiaTensorWorld()*ftorqueAxis1,impulse);
 				bodyB.internalApplyImpulse(normal*m_rbB.getInvMass(), m_rbB.getInvInertiaTensorWorld()*ftorqueAxis2,-impulse);
-		
+
 			}
 		}
 
@@ -358,11 +358,11 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 			btTransform trBCur = m_rbB.getCenterOfMassTransform();
 			btVector3 omegaA; bodyA.internalGetAngularVelocity(omegaA);
 			btVector3 omegaB; bodyB.internalGetAngularVelocity(omegaB);
-			btTransform trAPred; trAPred.setIdentity(); 
+			btTransform trAPred; trAPred.setIdentity();
 			btVector3 zerovec(0,0,0);
 			btTransformUtil::integrateTransform(
 				trACur, zerovec, omegaA, timeStep, trAPred);
-			btTransform trBPred; trBPred.setIdentity(); 
+			btTransform trBPred; trBPred.setIdentity();
 			btTransformUtil::integrateTransform(
 				trBCur, zerovec, omegaB, timeStep, trBPred);
 
@@ -374,7 +374,7 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 
 			// compute desired omegas in world
 			btVector3 omegaADes, omegaBDes;
-			
+
 			btTransformUtil::calculateVelocity(trACur, trADes, timeStep, zerovec, omegaADes);
 			btTransformUtil::calculateVelocity(trBCur, trBDes, timeStep, zerovec, omegaBDes);
 
@@ -514,7 +514,7 @@ void	btConeTwistConstraint::solveConstraintObsolete(btSolverBody& bodyA,btSolver
 
 				bodyA.internalApplyImpulse(btVector3(0,0,0), m_rbA.getInvInertiaTensorWorld()*m_twistAxis,impulseMag);
 				bodyB.internalApplyImpulse(btVector3(0,0,0), m_rbB.getInvInertiaTensorWorld()*m_twistAxis,-impulseMag);
-			}		
+			}
 		}
 	}
 #else
@@ -561,22 +561,22 @@ void btConeTwistConstraint::calcAngleInfo()
 		swing1  = btAtan2Fast(swy, swx);
 		fact = (swy*swy + swx*swx) * thresh * thresh;
 		fact = fact / (fact + btScalar(1.0));
-		swing1 *= fact; 
+		swing1 *= fact;
 	}
 
 	if (m_swingSpan2 >= btScalar(0.05f))
 	{
-		b1Axis3 = getRigidBodyA().getCenterOfMassTransform().getBasis() * this->m_rbAFrame.getBasis().getColumn(2);			
+		b1Axis3 = getRigidBodyA().getCenterOfMassTransform().getBasis() * this->m_rbAFrame.getBasis().getColumn(2);
 		swx = b2Axis1.dot(b1Axis1);
 		swy = b2Axis1.dot(b1Axis3);
 		swing2  = btAtan2Fast(swy, swx);
 		fact = (swy*swy + swx*swx) * thresh * thresh;
 		fact = fact / (fact + btScalar(1.0));
-		swing2 *= fact; 
+		swing2 *= fact;
 	}
 
-	btScalar RMaxAngle1Sq = 1.0f / (m_swingSpan1*m_swingSpan1);		
-	btScalar RMaxAngle2Sq = 1.0f / (m_swingSpan2*m_swingSpan2);	
+	btScalar RMaxAngle1Sq = 1.0f / (m_swingSpan1*m_swingSpan1);
+	btScalar RMaxAngle2Sq = 1.0f / (m_swingSpan2*m_swingSpan2);
 	btScalar EllipseAngle = btFabs(swing1*swing1)* RMaxAngle1Sq + btFabs(swing2*swing2) * RMaxAngle2Sq;
 
 	if (EllipseAngle > 1.0f)
@@ -595,7 +595,7 @@ void btConeTwistConstraint::calcAngleInfo()
 	{
 		btVector3 b2Axis2 = getRigidBodyB().getCenterOfMassTransform().getBasis() * this->m_rbBFrame.getBasis().getColumn(1);
 		btQuaternion rotationArc = shortestArcQuat(b2Axis1,b1Axis1);
-		btVector3 TwistRef = quatRotate(rotationArc,b2Axis2); 
+		btVector3 TwistRef = quatRotate(rotationArc,b2Axis2);
 		btScalar twist = btAtan2Fast( TwistRef.dot(b1Axis3), TwistRef.dot(b1Axis2) );
 		m_twistAngle = twist;
 
@@ -632,7 +632,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 	m_solveSwingLimit = false;
 	// compute rotation of A wrt B (in constraint space)
 	if (m_bMotorEnabled && (!m_useSolveConstraintObsolete))
-	{	// it is assumed that setMotorTarget() was alredy called 
+	{	// it is assumed that setMotorTarget() was alredy called
 		// and motor target m_qTarget is within constraint limits
 		// TODO : split rotation to pure swing and pure twist
 		// compute desired transforms in world
@@ -645,7 +645,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 		float swingAxisLen2 = swingAxis.length2();
 		if(btFuzzyZero(swingAxisLen2))
 		{
-		   return;
+			return;
 		}
 		m_swingAxis = swingAxis;
 		m_swingAxis.normalize();
@@ -686,7 +686,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 				{
 					m_swingLimitRatio = (swingAngle - swingLimit * m_limitSoftness)/
 										(swingLimit - swingLimit * m_limitSoftness);
-				}				
+				}
 
 				// swing correction tries to get back to soft limit
 				m_swingCorrection = swingAngle - (swingLimit * m_limitSoftness);
@@ -694,7 +694,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 				// adjustment of swing axis (based on ellipse normal)
 				adjustSwingAxisToUseEllipseNormal(swingAxis);
 
-				// Calculate necessary axis & factors		
+				// Calculate necessary axis & factors
 				m_swingAxis = quatRotate(qB, -swingAxis);
 
 				m_twistAxisA.setValue(0,0,0);
@@ -835,10 +835,10 @@ void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 		vSwingAxis = btVector3(qCone.x(), qCone.y(), qCone.z());
 		vSwingAxis.normalize();
 #if 0
-        // non-zero twist?! this should never happen.
-       btAssert(fabs(vSwingAxis.x()) <= SIMD_EPSILON));
+		// non-zero twist?! this should never happen.
+		btAssert(fabs(vSwingAxis.x()) <= SIMD_EPSILON));
 #endif
-        
+
 		// Compute limit for given swing. tricky:
 		// Given a swing axis, we're looking for the intersection with the bounding cone ellipse.
 		// (Since we're dealing with angles, this ellipse is embedded on the surface of a sphere.)
@@ -883,7 +883,7 @@ void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 	{
 		// this should never happen!
 #if 0
-        btAssert(0);
+		btAssert(0);
 #endif
  	}
 }
@@ -937,7 +937,7 @@ void btConeTwistConstraint::computeTwistLimitInfo(const btQuaternion& qTwist,
 	{
 		// this should never happen
 #if 0
-        btAssert(0);
+		btAssert(0);
 #endif
 	}
 
@@ -951,7 +951,7 @@ void btConeTwistConstraint::adjustSwingAxisToUseEllipseNormal(btVector3& vSwingA
 {
 	// the swing axis is computed as the "twist-free" cone rotation,
 	// but the cone limit is not circular, but elliptical (if swingspan1 != swingspan2).
-	// so, if we're outside the limits, the closest way back inside the cone isn't 
+	// so, if we're outside the limits, the closest way back inside the cone isn't
 	// along the vector back to the center. better (and more stable) to use the ellipse normal.
 
 	// convert swing axis to direction from center to surface of ellipse
@@ -1045,7 +1045,7 @@ void btConeTwistConstraint::setMotorTargetInConstraintSpace(const btQuaternion &
 	}
 }
 
-///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
+///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5).
 ///If no axis is provided, it uses the default axis for this constraint.
 void btConeTwistConstraint::setParam(int num, btScalar value, int axis)
 {
@@ -1053,7 +1053,7 @@ void btConeTwistConstraint::setParam(int num, btScalar value, int axis)
 	{
 		case BT_CONSTRAINT_ERP :
 		case BT_CONSTRAINT_STOP_ERP :
-			if((axis >= 0) && (axis < 3)) 
+			if((axis >= 0) && (axis < 3))
 			{
 				m_linERP = value;
 				m_flags |= BT_CONETWIST_FLAGS_LIN_ERP;
@@ -1065,7 +1065,7 @@ void btConeTwistConstraint::setParam(int num, btScalar value, int axis)
 			break;
 		case BT_CONSTRAINT_CFM :
 		case BT_CONSTRAINT_STOP_CFM :
-			if((axis >= 0) && (axis < 3)) 
+			if((axis >= 0) && (axis < 3))
 			{
 				m_linCFM = value;
 				m_flags |= BT_CONETWIST_FLAGS_LIN_CFM;
@@ -1083,19 +1083,19 @@ void btConeTwistConstraint::setParam(int num, btScalar value, int axis)
 }
 
 ///return the local value of parameter
-btScalar btConeTwistConstraint::getParam(int num, int axis) const 
+btScalar btConeTwistConstraint::getParam(int num, int axis) const
 {
 	btScalar retVal = 0;
 	switch(num)
 	{
 		case BT_CONSTRAINT_ERP :
 		case BT_CONSTRAINT_STOP_ERP :
-			if((axis >= 0) && (axis < 3)) 
+			if((axis >= 0) && (axis < 3))
 			{
 				btAssertConstrParams(m_flags & BT_CONETWIST_FLAGS_LIN_ERP);
 				retVal = m_linERP;
 			}
-			else if((axis >= 3) && (axis < 6)) 
+			else if((axis >= 3) && (axis < 6))
 			{
 				retVal = m_biasFactor;
 			}
@@ -1106,12 +1106,12 @@ btScalar btConeTwistConstraint::getParam(int num, int axis) const
 			break;
 		case BT_CONSTRAINT_CFM :
 		case BT_CONSTRAINT_STOP_CFM :
-			if((axis >= 0) && (axis < 3)) 
+			if((axis >= 0) && (axis < 3))
 			{
 				btAssertConstrParams(m_flags & BT_CONETWIST_FLAGS_LIN_CFM);
 				retVal = m_linCFM;
 			}
-			else if((axis >= 3) && (axis < 6)) 
+			else if((axis >= 3) && (axis < 6))
 			{
 				btAssertConstrParams(m_flags & BT_CONETWIST_FLAGS_ANG_CFM);
 				retVal = m_angCFM;
@@ -1121,7 +1121,7 @@ btScalar btConeTwistConstraint::getParam(int num, int axis) const
 				btAssertConstrParams(0);
 			}
 			break;
-		default : 
+		default :
 			btAssertConstrParams(0);
 	}
 	return retVal;
@@ -1136,6 +1136,6 @@ void btConeTwistConstraint::setFrames(const btTransform & frameA, const btTransf
 	//calculateTransforms();
 }
 
- 
+
 
 

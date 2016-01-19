@@ -4,8 +4,8 @@ Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -89,7 +89,7 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 
 	btVector3 localA;
 	btVector3 localB;
-	
+
 	if (isSwapped)
 	{
 		localA = m_body1Wrap->getCollisionObject()->getWorldTransform().invXform(pointA );
@@ -103,17 +103,17 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 	btManifoldPoint newPt(localA,localB,normalOnBInWorld,depth);
 	newPt.m_positionWorldOnA = pointA;
 	newPt.m_positionWorldOnB = pointInWorld;
-	
+
 	int insertIndex = m_manifoldPtr->getCacheEntry(newPt);
 
 	newPt.m_combinedFriction = calculateCombinedFriction(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
 	newPt.m_combinedRestitution = calculateCombinedRestitution(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
 	newPt.m_combinedRollingFriction = calculateCombinedRollingFriction(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
 	btPlaneSpace1(newPt.m_normalWorldOnB,newPt.m_lateralFrictionDir1,newPt.m_lateralFrictionDir2);
-	
 
-	
-   //BP mod, store contact triangles.
+
+
+	//BP mod, store contact triangles.
 	if (isSwapped)
 	{
 		newPt.m_partId0 = m_partId1;
@@ -137,12 +137,12 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 	{
 		insertIndex = m_manifoldPtr->addManifoldPoint(newPt);
 	}
-	
+
 	//User can override friction and/or restitution
 	if (gContactAddedCallback &&
 		//and if either of the two bodies requires custom material
 		 ((m_body0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK) ||
-		   (m_body1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)))
+			(m_body1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)))
 	{
 		//experimental feature info, for per-triangle material etc.
 		const btCollisionObjectWrapper* obj0Wrap = isSwapped? m_body1Wrap : m_body0Wrap;

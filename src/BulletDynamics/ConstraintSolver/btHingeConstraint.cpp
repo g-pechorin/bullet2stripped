@@ -4,8 +4,8 @@ Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -48,7 +48,7 @@ btHingeConstraint::btHingeConstraint(btRigidBody& rbA,btRigidBody& rbB, const bt
 									 m_flags(0)
 {
 	m_rbAFrame.getOrigin() = pivotInA;
-	
+
 	// since no frame is given, assume this to be zero angle and just pick rb transform axis
 	btVector3 rbAxisA1 = rbA.getCenterOfMassTransform().getBasis().getColumn(0);
 
@@ -59,7 +59,7 @@ btHingeConstraint::btHingeConstraint(btRigidBody& rbA,btRigidBody& rbB, const bt
 		rbAxisA2 = rbA.getCenterOfMassTransform().getBasis().getColumn(1);
 	} else if (projection <= -1.0f + SIMD_EPSILON) {
 		rbAxisA1 = rbA.getCenterOfMassTransform().getBasis().getColumn(2);
-		rbAxisA2 = rbA.getCenterOfMassTransform().getBasis().getColumn(1);      
+		rbAxisA2 = rbA.getCenterOfMassTransform().getBasis().getColumn(1);
 	} else {
 		rbAxisA2 = axisInA.cross(rbAxisA1);
 		rbAxisA1 = rbAxisA2.cross(axisInA);
@@ -71,13 +71,13 @@ btHingeConstraint::btHingeConstraint(btRigidBody& rbA,btRigidBody& rbB, const bt
 
 	btQuaternion rotationArc = shortestArcQuat(axisInA,axisInB);
 	btVector3 rbAxisB1 =  quatRotate(rotationArc,rbAxisA1);
-	btVector3 rbAxisB2 =  axisInB.cross(rbAxisB1);	
-	
+	btVector3 rbAxisB2 =  axisInB.cross(rbAxisB1);
+
 	m_rbBFrame.getOrigin() = pivotInB;
 	m_rbBFrame.getBasis().setValue( rbAxisB1.getX(),rbAxisB2.getX(),axisInB.getX(),
 									rbAxisB1.getY(),rbAxisB2.getY(),axisInB.getY(),
 									rbAxisB1.getZ(),rbAxisB2.getZ(),axisInB.getZ() );
-	
+
 #ifndef	_BT_USE_CENTER_LIMIT_
 	//start with free
 	m_lowerLimit = btScalar(1.0f);
@@ -97,7 +97,7 @@ btHingeConstraint::btHingeConstraint(btRigidBody& rbA,const btVector3& pivotInA,
 #ifdef _BT_USE_CENTER_LIMIT_
 m_limit(),
 #endif
-m_angularOnly(false), m_enableAngularMotor(false), 
+m_angularOnly(false), m_enableAngularMotor(false),
 m_useSolveConstraintObsolete(HINGE_USE_OBSOLETE_SOLVER),
 m_useOffsetForConstraintFrame(HINGE_USE_FRAME_OFFSET),
 m_useReferenceFrameA(useReferenceFrameA),
@@ -125,7 +125,7 @@ m_flags(0)
 	m_rbBFrame.getBasis().setValue( rbAxisB1.getX(),rbAxisB2.getX(),axisInB.getX(),
 									rbAxisB1.getY(),rbAxisB2.getY(),axisInB.getY(),
 									rbAxisB1.getZ(),rbAxisB2.getZ(),axisInB.getZ() );
-	
+
 #ifndef	_BT_USE_CENTER_LIMIT_
 	//start with free
 	m_lowerLimit = btScalar(1.0f);
@@ -140,8 +140,8 @@ m_flags(0)
 
 
 
-btHingeConstraint::btHingeConstraint(btRigidBody& rbA,btRigidBody& rbB, 
-								     const btTransform& rbAFrame, const btTransform& rbBFrame, bool useReferenceFrameA)
+btHingeConstraint::btHingeConstraint(btRigidBody& rbA,btRigidBody& rbB,
+									 const btTransform& rbAFrame, const btTransform& rbBFrame, bool useReferenceFrameA)
 :btTypedConstraint(HINGE_CONSTRAINT_TYPE, rbA,rbB),m_rbAFrame(rbAFrame),m_rbBFrame(rbBFrame),
 #ifdef _BT_USE_CENTER_LIMIT_
 m_limit(),
@@ -163,7 +163,7 @@ m_flags(0)
 	m_solveLimit = false;
 #endif
 	m_referenceSign = m_useReferenceFrameA ? btScalar(-1.f) : btScalar(1.f);
-}			
+}
 
 
 
@@ -242,13 +242,13 @@ void	btHingeConstraint::buildJacobian()
 		//this is unused for now, it's a todo
 		btVector3 jointAxis0local;
 		btVector3 jointAxis1local;
-		
+
 		btPlaneSpace1(m_rbAFrame.getBasis().getColumn(2),jointAxis0local,jointAxis1local);
 
 		btVector3 jointAxis0 = getRigidBodyA().getCenterOfMassTransform().getBasis() * jointAxis0local;
 		btVector3 jointAxis1 = getRigidBodyA().getCenterOfMassTransform().getBasis() * jointAxis1local;
 		btVector3 hingeAxisWorld = getRigidBodyA().getCenterOfMassTransform().getBasis() * m_rbAFrame.getBasis().getColumn(2);
-			
+
 		new (&m_jacAng[0])	btJacobianEntry(jointAxis0,
 			m_rbA.getCenterOfMassTransform().getBasis().transpose(),
 			m_rbB.getCenterOfMassTransform().getBasis().transpose(),
@@ -295,14 +295,14 @@ void btHingeConstraint::getInfo1(btConstraintInfo1* info)
 	else
 	{
 		info->m_numConstraintRows = 5; // Fixed 3 linear + 2 angular
-		info->nub = 1; 
+		info->nub = 1;
 		//always add the row, to avoid computation (data is not available yet)
 		//prepare constraint
 		testLimit(m_rbA.getCenterOfMassTransform(),m_rbB.getCenterOfMassTransform());
 		if(getSolveLimit() || getEnableAngularMotor())
 		{
 			info->m_numConstraintRows++; // limit 3rd anguar as well
-			info->nub--; 
+			info->nub--;
 		}
 
 	}
@@ -319,7 +319,7 @@ void btHingeConstraint::getInfo1NonVirtual(btConstraintInfo1* info)
 	{
 		//always add the 'limit' row, to avoid computation (data is not available yet)
 		info->m_numConstraintRows = 6; // Fixed 3 linear + 2 angular
-		info->nub = 0; 
+		info->nub = 0;
 	}
 }
 
@@ -392,7 +392,7 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 		info->m_J2linearAxis[0] = -1;
 		info->m_J2linearAxis[skip + 1] = -1;
 		info->m_J2linearAxis[2 * skip + 2] = -1;
-	}	
+	}
 
 
 
@@ -413,7 +413,7 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 		a2.getSkewSymmetricMatrix(angular0,angular1,angular2);
 	}
 	// linear RHS
-    btScalar k = info->fps * info->erp;
+	btScalar k = info->fps * info->erp;
 	if (!m_angularOnly)
 	{
 		for(i = 0; i < 3; i++)
@@ -434,9 +434,9 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 	// get 2 orthos to hinge axis (X, Y)
 	btVector3 p = trA.getBasis().getColumn(0);
 	btVector3 q = trA.getBasis().getColumn(1);
-	// set the two hinge angular rows 
-    int s3 = 3 * info->rowskip;
-    int s4 = 4 * info->rowskip;
+	// set the two hinge angular rows
+	int s3 = 3 * info->rowskip;
+	int s4 = 4 * info->rowskip;
 
 	info->m_J1angularAxis[s3 + 0] = p[0];
 	info->m_J1angularAxis[s3 + 1] = p[1];
@@ -451,22 +451,22 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 	info->m_J2angularAxis[s4 + 0] = -q[0];
 	info->m_J2angularAxis[s4 + 1] = -q[1];
 	info->m_J2angularAxis[s4 + 2] = -q[2];
-    // compute the right hand side of the constraint equation. set relative
-    // body velocities along p and q to bring the hinge back into alignment.
-    // if ax1,ax2 are the unit length hinge axes as computed from body1 and
-    // body2, we need to rotate both bodies along the axis u = (ax1 x ax2).
-    // if `theta' is the angle between ax1 and ax2, we need an angular velocity
-    // along u to cover angle erp*theta in one step :
-    //   |angular_velocity| = angle/time = erp*theta / stepsize
-    //                      = (erp*fps) * theta
-    //    angular_velocity  = |angular_velocity| * (ax1 x ax2) / |ax1 x ax2|
-    //                      = (erp*fps) * theta * (ax1 x ax2) / sin(theta)
-    // ...as ax1 and ax2 are unit length. if theta is smallish,
-    // theta ~= sin(theta), so
-    //    angular_velocity  = (erp*fps) * (ax1 x ax2)
-    // ax1 x ax2 is in the plane space of ax1, so we project the angular
-    // velocity to p and q to find the right hand side.
-    btVector3 ax2 = trB.getBasis().getColumn(2);
+	// compute the right hand side of the constraint equation. set relative
+	// body velocities along p and q to bring the hinge back into alignment.
+	// if ax1,ax2 are the unit length hinge axes as computed from body1 and
+	// body2, we need to rotate both bodies along the axis u = (ax1 x ax2).
+	// if `theta' is the angle between ax1 and ax2, we need an angular velocity
+	// along u to cover angle erp*theta in one step :
+	//   |angular_velocity| = angle/time = erp*theta / stepsize
+	//                      = (erp*fps) * theta
+	//    angular_velocity  = |angular_velocity| * (ax1 x ax2) / |ax1 x ax2|
+	//                      = (erp*fps) * theta * (ax1 x ax2) / sin(theta)
+	// ...as ax1 and ax2 are unit length. if theta is smallish,
+	// theta ~= sin(theta), so
+	//    angular_velocity  = (erp*fps) * (ax1 x ax2)
+	// ax1 x ax2 is in the plane space of ax1, so we project the angular
+	// velocity to p and q to find the right hand side.
+	btVector3 ax2 = trB.getBasis().getColumn(2);
 	btVector3 u = ax1.cross(ax2);
 	info->m_constraintError[s3] = k * u.dot(p);
 	info->m_constraintError[s4] = k * u.dot(q);
@@ -491,7 +491,7 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 	{
 		powered = 1;
 	}
-	if(limit || powered) 
+	if(limit || powered)
 	{
 		nrow++;
 		srow = nrow * info->rowskip;
@@ -530,18 +530,18 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 			{
 				info->cfm[srow] = m_stopCFM;
 			}
-			if(lostop == histop) 
+			if(lostop == histop)
 			{
 				// limited low and high simultaneously
 				info->m_lowerLimit[srow] = -SIMD_INFINITY;
 				info->m_upperLimit[srow] = SIMD_INFINITY;
 			}
-			else if(limit == 1) 
+			else if(limit == 1)
 			{ // low limit
 				info->m_lowerLimit[srow] = 0;
 				info->m_upperLimit[srow] = SIMD_INFINITY;
 			}
-			else 
+			else
 			{ // high limit
 				info->m_lowerLimit[srow] = -SIMD_INFINITY;
 				info->m_upperLimit[srow] = 0;
@@ -641,7 +641,7 @@ void btHingeConstraint::testLimit(const btTransform& transA,const btTransform& t
 			m_correction = (m_lowerLimit - m_hingeAngle);
 			m_limitSign = 1.0f;
 			m_solveLimit = true;
-		} 
+		}
 		else if (m_hingeAngle >= m_upperLimit)
 		{
 			m_correction = m_upperLimit - m_hingeAngle;
@@ -725,7 +725,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	{
 		factA = miB / miS;
 	}
-	else 
+	else
 	{
 		factA = btScalar(0.5f);
 	}
@@ -736,7 +736,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	btVector3 ax1B = trB.getBasis().getColumn(2);
 	btVector3 ax1 = ax1A * factA + ax1B * factB;
 	ax1.normalize();
-	// fill first 3 rows 
+	// fill first 3 rows
 	// we want: velA + wA x relA == velB + wB x relB
 	btTransform bodyA_trans = transA;
 	btTransform bodyB_trans = transB;
@@ -775,8 +775,8 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	// fill three rows
 	tmpA = relA.cross(p);
 	tmpB = relB.cross(p);
-    for (i=0; i<3; i++) info->m_J1angularAxis[s0+i] = tmpA[i];
-    for (i=0; i<3; i++) info->m_J2angularAxis[s0+i] = -tmpB[i];
+	for (i=0; i<3; i++) info->m_J1angularAxis[s0+i] = tmpA[i];
+	for (i=0; i<3; i++) info->m_J2angularAxis[s0+i] = -tmpB[i];
 	tmpA = relA.cross(q);
 	tmpB = relB.cross(q);
 	if(hasStaticBody && getSolveLimit())
@@ -786,7 +786,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 		tmpA *= factA;
 	}
 	for (i=0; i<3; i++) info->m_J1angularAxis[s1+i] = tmpA[i];
-    for (i=0; i<3; i++) info->m_J2angularAxis[s1+i] = -tmpB[i];
+	for (i=0; i<3; i++) info->m_J2angularAxis[s1+i] = -tmpB[i];
 	tmpA = relA.cross(ax1);
 	tmpB = relB.cross(ax1);
 	if(hasStaticBody)
@@ -796,7 +796,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 		tmpA *= factA;
 	}
 	for (i=0; i<3; i++) info->m_J1angularAxis[s2+i] = tmpA[i];
-    for (i=0; i<3; i++) info->m_J2angularAxis[s2+i] = -tmpB[i];
+	for (i=0; i<3; i++) info->m_J2angularAxis[s2+i] = -tmpB[i];
 
 	btScalar k = info->fps * info->erp;
 
@@ -811,7 +811,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 		for (i=0; i<3; i++) info->m_J2linearAxis[s2+i] = -ax1[i];
 
 	// compute three elements of right hand side
-	
+
 		btScalar rhs = k * p.dot(ofs);
 		info->m_constraintError[s0] = rhs;
 		rhs = k * q.dot(ofs);
@@ -882,7 +882,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	{
 		powered = 1;
 	}
-	if(limit || powered) 
+	if(limit || powered)
 	{
 		nrow++;
 		srow = nrow * info->rowskip;
@@ -921,18 +921,18 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 			{
 				info->cfm[srow] = m_stopCFM;
 			}
-			if(lostop == histop) 
+			if(lostop == histop)
 			{
 				// limited low and high simultaneously
 				info->m_lowerLimit[srow] = -SIMD_INFINITY;
 				info->m_upperLimit[srow] = SIMD_INFINITY;
 			}
-			else if(limit == 1) 
+			else if(limit == 1)
 			{ // low limit
 				info->m_lowerLimit[srow] = 0;
 				info->m_upperLimit[srow] = SIMD_INFINITY;
 			}
-			else 
+			else
 			{ // high limit
 				info->m_lowerLimit[srow] = -SIMD_INFINITY;
 				info->m_upperLimit[srow] = 0;
@@ -982,14 +982,14 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 }
 
 
-///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
+///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5).
 ///If no axis is provided, it uses the default axis for this constraint.
 void btHingeConstraint::setParam(int num, btScalar value, int axis)
 {
 	if((axis == -1) || (axis == 5))
 	{
 		switch(num)
-		{	
+		{
 			case BT_CONSTRAINT_STOP_ERP :
 				m_stopERP = value;
 				m_flags |= BT_HINGE_FLAGS_ERP_STOP;
@@ -1002,7 +1002,7 @@ void btHingeConstraint::setParam(int num, btScalar value, int axis)
 				m_normalCFM = value;
 				m_flags |= BT_HINGE_FLAGS_CFM_NORM;
 				break;
-			default : 
+			default :
 				btAssertConstrParams(0);
 		}
 	}
@@ -1013,13 +1013,13 @@ void btHingeConstraint::setParam(int num, btScalar value, int axis)
 }
 
 ///return the local value of parameter
-btScalar btHingeConstraint::getParam(int num, int axis) const 
+btScalar btHingeConstraint::getParam(int num, int axis) const
 {
 	btScalar retVal = 0;
 	if((axis == -1) || (axis == 5))
 	{
 		switch(num)
-		{	
+		{
 			case BT_CONSTRAINT_STOP_ERP :
 				btAssertConstrParams(m_flags & BT_HINGE_FLAGS_ERP_STOP);
 				retVal = m_stopERP;
@@ -1032,7 +1032,7 @@ btScalar btHingeConstraint::getParam(int num, int axis) const
 				btAssertConstrParams(m_flags & BT_HINGE_FLAGS_CFM_NORM);
 				retVal = m_normalCFM;
 				break;
-			default : 
+			default :
 				btAssertConstrParams(0);
 		}
 	}

@@ -4,8 +4,8 @@ Copyright (c) 2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -28,48 +28,48 @@ enum	btMultiBodyLinkFlags
 // Link struct
 //
 
-struct btMultibodyLink 
+struct btMultibodyLink
 {
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-    btScalar joint_pos;    // qi
+	btScalar joint_pos;    // qi
 
-    btScalar mass;         // mass of link
-    btVector3 inertia;   // inertia of link (local frame; diagonal)
+	btScalar mass;         // mass of link
+	btVector3 inertia;   // inertia of link (local frame; diagonal)
 
-    int parent;         // index of the parent link (assumed to be < index of this link), or -1 if parent is the base link.
+	int parent;         // index of the parent link (assumed to be < index of this link), or -1 if parent is the base link.
 
-    btQuaternion zero_rot_parent_to_this;    // rotates vectors in parent-frame to vectors in local-frame (when q=0). constant.
+	btQuaternion zero_rot_parent_to_this;    // rotates vectors in parent-frame to vectors in local-frame (when q=0). constant.
 
-    // "axis" = spatial joint axis (Mirtich Defn 9 p104). (expressed in local frame.) constant.
-    // for prismatic: axis_top = zero;
-    //                axis_bottom = unit vector along the joint axis.
-    // for revolute: axis_top = unit vector along the rotation axis (u);
-    //               axis_bottom = u cross d_vector.
-    btVector3 axis_top;
-    btVector3 axis_bottom;
+	// "axis" = spatial joint axis (Mirtich Defn 9 p104). (expressed in local frame.) constant.
+	// for prismatic: axis_top = zero;
+	//                axis_bottom = unit vector along the joint axis.
+	// for revolute: axis_top = unit vector along the rotation axis (u);
+	//               axis_bottom = u cross d_vector.
+	btVector3 axis_top;
+	btVector3 axis_bottom;
 
-    btVector3 d_vector;   // vector from the inboard joint pos to this link's COM. (local frame.) constant. set for revolute joints only.
+	btVector3 d_vector;   // vector from the inboard joint pos to this link's COM. (local frame.) constant. set for revolute joints only.
 
-    // e_vector is constant, but depends on the joint type
-    // prismatic: vector from COM of parent to COM of this link, WHEN Q = 0. (local frame.)
-    // revolute: vector from parent's COM to the pivot point, in PARENT's frame.
-    btVector3 e_vector;
+	// e_vector is constant, but depends on the joint type
+	// prismatic: vector from COM of parent to COM of this link, WHEN Q = 0. (local frame.)
+	// revolute: vector from parent's COM to the pivot point, in PARENT's frame.
+	btVector3 e_vector;
 
-    bool is_revolute;   // true = revolute, false = prismatic
+	bool is_revolute;   // true = revolute, false = prismatic
 
-    btQuaternion cached_rot_parent_to_this;   // rotates vectors in parent frame to vectors in local frame
-    btVector3 cached_r_vector;                // vector from COM of parent to COM of this link, in local frame.
+	btQuaternion cached_rot_parent_to_this;   // rotates vectors in parent frame to vectors in local frame
+	btVector3 cached_r_vector;                // vector from COM of parent to COM of this link, in local frame.
 
-    btVector3 applied_force;    // In WORLD frame
-    btVector3 applied_torque;   // In WORLD frame
-    btScalar joint_torque;
+	btVector3 applied_force;    // In WORLD frame
+	btVector3 applied_torque;   // In WORLD frame
+	btScalar joint_torque;
 
 	class btMultiBodyLinkCollider* m_collider;
 	int m_flags;
 
-    // ctor: set some sensible defaults
+	// ctor: set some sensible defaults
 	btMultibodyLink()
 		: joint_pos(0),
 			mass(1),
@@ -91,14 +91,14 @@ struct btMultibodyLink
 		applied_torque.setValue(0, 0, 0);
 	}
 
-    // routine to update cached_rot_parent_to_this and cached_r_vector
-    void updateCache()
+	// routine to update cached_rot_parent_to_this and cached_r_vector
+	void updateCache()
 	{
-		if (is_revolute) 
+		if (is_revolute)
 		{
 			cached_rot_parent_to_this = btQuaternion(axis_top,-joint_pos) * zero_rot_parent_to_this;
 			cached_r_vector = d_vector + quatRotate(cached_rot_parent_to_this,e_vector);
-		} else 
+		} else
 		{
 			// cached_rot_parent_to_this never changes, so no need to update
 			cached_r_vector = e_vector + joint_pos * axis_bottom;

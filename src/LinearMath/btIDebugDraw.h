@@ -4,8 +4,8 @@ Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -46,23 +46,23 @@ class	btIDebugDraw
 		DBG_DrawConstraints = (1 << 11),
 		DBG_DrawConstraintLimits = (1 << 12),
 		DBG_FastWireframe = (1<<13),
-        DBG_DrawNormals = (1<<14),
+		DBG_DrawNormals = (1<<14),
 		DBG_MAX_DEBUG_DRAW_MODE
 	};
 
 	virtual ~btIDebugDraw() {};
 
 	virtual void	drawLine(const btVector3& from,const btVector3& to,const btVector3& color)=0;
-		
+
 	virtual void    drawLine(const btVector3& from,const btVector3& to, const btVector3& fromColor, const btVector3& toColor)
 	{
-        (void) toColor;
+		(void) toColor;
 		drawLine (from, to, fromColor);
 	}
 
 	virtual void	drawSphere(btScalar radius, const btTransform& transform, const btVector3& color)
 	{
-		
+
 		btVector3 center = transform.getOrigin();
 		btVector3 up = transform.getBasis().getColumn(1);
 		btVector3 axis = transform.getBasis().getColumn(0);
@@ -74,7 +74,7 @@ class	btIDebugDraw
 		drawSpherePatch(center, up, axis, radius,minTh, maxTh, minPs, maxPs, color, stepDegrees ,false);
 		drawSpherePatch(center, up, -axis, radius,minTh, maxTh, minPs, maxPs, color, stepDegrees,false );
 	}
-	
+
 	virtual void	drawSphere (const btVector3& p, btScalar radius, const btVector3& color)
 	{
 		btTransform tr;
@@ -82,7 +82,7 @@ class	btIDebugDraw
 		tr.setOrigin(p);
 		drawSphere(radius,tr,color);
 	}
-	
+
 	virtual	void	drawTriangle(const btVector3& v0,const btVector3& v1,const btVector3& v2,const btVector3& /*n0*/,const btVector3& /*n1*/,const btVector3& /*n2*/,const btVector3& color, btScalar alpha)
 	{
 		drawTriangle(v0,v1,v2,color,alpha);
@@ -99,9 +99,9 @@ class	btIDebugDraw
 	virtual void	reportErrorWarning(const char* warningString) = 0;
 
 	virtual void	draw3dText(const btVector3& location,const char* textString) = 0;
-	
+
 	virtual void	setDebugMode(int debugMode) =0;
-	
+
 	virtual int		getDebugMode() const = 0;
 
 	virtual void drawAabb(const btVector3& from,const btVector3& to,const btVector3& color)
@@ -116,13 +116,13 @@ class	btIDebugDraw
 		{
 			for (j=0;j<3;j++)
 			{
-				pa = btVector3(edgecoord[0]*halfExtents[0], edgecoord[1]*halfExtents[1],		
+				pa = btVector3(edgecoord[0]*halfExtents[0], edgecoord[1]*halfExtents[1],
 					edgecoord[2]*halfExtents[2]);
 				pa+=center;
 
 				int othercoord = j%3;
 				edgecoord[othercoord]*=-1.f;
-				pb = btVector3(edgecoord[0]*halfExtents[0], edgecoord[1]*halfExtents[1],	
+				pb = btVector3(edgecoord[0]*halfExtents[0], edgecoord[1]*halfExtents[1],
 					edgecoord[2]*halfExtents[2]);
 				pb+=center;
 
@@ -141,7 +141,7 @@ class	btIDebugDraw
 		drawLine(start, start+transform.getBasis() * btVector3(0, 0, orthoLen), btVector3(0,0,0.7f));
 	}
 
-	virtual void drawArc(const btVector3& center, const btVector3& normal, const btVector3& axis, btScalar radiusA, btScalar radiusB, btScalar minAngle, btScalar maxAngle, 
+	virtual void drawArc(const btVector3& center, const btVector3& normal, const btVector3& axis, btScalar radiusA, btScalar radiusB, btScalar minAngle, btScalar maxAngle,
 				const btVector3& color, bool drawSect, btScalar stepDegrees = btScalar(10.f))
 	{
 		const btVector3& vx = axis;
@@ -166,7 +166,7 @@ class	btIDebugDraw
 			drawLine(center, prev, color);
 		}
 	}
-	virtual void drawSpherePatch(const btVector3& center, const btVector3& up, const btVector3& axis, btScalar radius, 
+	virtual void drawSpherePatch(const btVector3& center, const btVector3& up, const btVector3& axis, btScalar radius,
 		btScalar minTh, btScalar maxTh, btScalar minPs, btScalar maxPs, const btVector3& color, btScalar stepDegrees = btScalar(10.f),bool drawCenter = true)
 	{
 		btVector3 vA[74];
@@ -249,7 +249,7 @@ class	btIDebugDraw
 				{
 					drawLine(npole, pvB[j], color);
 				}
-				
+
 				if (drawCenter)
 				{
 					if(isClosed)
@@ -271,8 +271,8 @@ class	btIDebugDraw
 			pT = pvA; pvA = pvB; pvB = pT;
 		}
 	}
-	
-  
+
+
 	virtual void drawBox(const btVector3& bbMin, const btVector3& bbMax, const btVector3& color)
 	{
 		drawLine(btVector3(bbMin[0], bbMin[1], bbMin[2]), btVector3(bbMax[0], bbMin[1], bbMin[2]), color);
@@ -327,7 +327,7 @@ class	btIDebugDraw
 				btScalar maxTh = SIMD_HALF_PI;
 				btScalar minPs = -SIMD_HALF_PI;
 				btScalar maxPs = SIMD_HALF_PI;
-				
+
 				drawSpherePatch(center, up, axis, radius,minTh, maxTh, minPs, maxPs, color, btScalar(stepDegrees) ,false);
 			}
 
@@ -359,7 +359,7 @@ class	btIDebugDraw
 			capEnd[(upAxis+2)%3] = capStart[(upAxis+2)%3]  = btCos(btScalar(i)*SIMD_RADS_PER_DEG)*radius;
 			drawLine(start+transform.getBasis() * capStart,start+transform.getBasis() * capEnd, color);
 		}
-		
+
 	}
 
 	virtual void drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, const btTransform& transform, const btVector3& color)

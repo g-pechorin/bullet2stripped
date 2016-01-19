@@ -4,8 +4,8 @@ Copyright (c) 2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -27,16 +27,16 @@ btMultiBodyJointLimitConstraint::btMultiBodyJointLimitConstraint(btMultiBody* bo
 	m_upperBound(upper)
 {
 	// the data.m_jacobians never change, so may as well
-    // initialize them here
-        
-    // note: we rely on the fact that data.m_jacobians are
-    // always initialized to zero by the Constraint ctor
+	// initialize them here
 
-    // row 0: the lower bound
-    jacobianA(0)[6 + link] = 1;
+	// note: we rely on the fact that data.m_jacobians are
+	// always initialized to zero by the Constraint ctor
 
-    // row 1: the upper bound
-    jacobianB(1)[6 + link] = -1;
+	// row 0: the lower bound
+	jacobianA(0)[6 + link] = 1;
+
+	// row 1: the upper bound
+	jacobianB(1)[6 + link] = -1;
 }
 btMultiBodyJointLimitConstraint::~btMultiBodyJointLimitConstraint()
 {
@@ -75,21 +75,21 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
 		btMultiBodyJacobianData& data,
 		const btContactSolverInfo& infoGlobal)
 {
-    // only positions need to be updated -- data.m_jacobians and force
-    // directions were set in the ctor and never change.
-    
-    // row 0: the lower bound
-    setPosition(0, m_bodyA->getJointPos(m_linkA) - m_lowerBound);
+	// only positions need to be updated -- data.m_jacobians and force
+	// directions were set in the ctor and never change.
 
-    // row 1: the upper bound
-    setPosition(1, m_upperBound - m_bodyA->getJointPos(m_linkA));
+	// row 0: the lower bound
+	setPosition(0, m_bodyA->getJointPos(m_linkA) - m_lowerBound);
+
+	// row 1: the upper bound
+	setPosition(1, m_upperBound - m_bodyA->getJointPos(m_linkA));
 
 	for (int row=0;row<getNumRows();row++)
 	{
 		btMultiBodySolverConstraint& constraintRow = constraintRows.expandNonInitializing();
 		constraintRow.m_multiBodyA = m_bodyA;
 		constraintRow.m_multiBodyB = m_bodyB;
-		
+
 		btScalar rel_vel = fillConstraintRowMultiBodyMultiBody(constraintRow,data,jacobianA(row),jacobianB(row),infoGlobal,0,-m_maxAppliedImpulse,m_maxAppliedImpulse);
 		{
 			btScalar penetration = getPosition(row);
@@ -127,7 +127,7 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
 	}
 
 }
-	
-	
-	
+
+
+
 

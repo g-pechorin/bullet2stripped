@@ -70,9 +70,9 @@ static inline void *btAlignedAllocDefault(size_t size, int alignment)
   real = (char *)sAllocFunc(size + sizeof(void *) + (alignment-1));
   if (real) {
 	ret = btAlignPointer(real + sizeof(void *),alignment);
-    *((void **)(ret)-1) = (void *)(real);
+	*((void **)(ret)-1) = (void *)(real);
   } else {
-    ret = (void *)(real);
+	ret = (void *)(real);
   }
   return (ret);
 }
@@ -82,8 +82,8 @@ static inline void btAlignedFreeDefault(void *ptr)
   void* real;
 
   if (ptr) {
-    real = *((void **)(ptr)-1);
-    sFreeFunc(real);
+	real = *((void **)(ptr)-1);
+	sFreeFunc(real);
   }
 }
 #endif
@@ -116,15 +116,15 @@ void*   btAlignedAllocInternal  (size_t size, int alignment,int line,char* filen
  gTotalBytesAlignedAllocs += size;
  gNumAlignedAllocs++;
 
- 
+
  real = (char *)sAllocFunc(size + 2*sizeof(void *) + (alignment-1));
  if (real) {
-   ret = (void*) btAlignPointer(real + 2*sizeof(void *), alignment);
-   *((void **)(ret)-1) = (void *)(real);
-       *((int*)(ret)-2) = size;
+	ret = (void*) btAlignPointer(real + 2*sizeof(void *), alignment);
+	*((void **)(ret)-1) = (void *)(real);
+		*((int*)(ret)-2) = size;
 
  } else {
-   ret = (void *)(real);//??
+	ret = (void *)(real);//??
  }
 
  printf("allocation#%d at address %x, from %s,line %d, size %d\n",gNumAlignedAllocs,real, filename,line,size);
@@ -141,13 +141,13 @@ void    btAlignedFreeInternal   (void* ptr,int line,char* filename)
  gNumAlignedFree++;
 
  if (ptr) {
-   real = *((void **)(ptr)-1);
-       int size = *((int*)(ptr)-2);
-       gTotalBytesAlignedAllocs -= size;
+	real = *((void **)(ptr)-1);
+		int size = *((int*)(ptr)-2);
+		gTotalBytesAlignedAllocs -= size;
 
-	   printf("free #%d at address %x, from %s,line %d, size %d\n",gNumAlignedFree,real, filename,line,size);
+		printf("free #%d at address %x, from %s,line %d, size %d\n",gNumAlignedFree,real, filename,line,size);
 
-   sFreeFunc(real);
+	sFreeFunc(real);
  } else
  {
 	 printf("NULL ptr\n");

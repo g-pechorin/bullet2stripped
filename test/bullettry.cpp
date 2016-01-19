@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
 		// The world.
 		ref_ptr<btDiscreteDynamicsWorld> dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		dynamicsWorld->setGravity(btVector3(0, -10, 0));
-		
+
 		// setup the ground
 		ref_ptr<btCollisionShape> groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 		ref_ptr<btDefaultMotionState> groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 			std::cout << "sphere height: " << trans.getOrigin().getY() << std::endl;
 		}
 
-		// Clean up behind ourselves like good little programmers		
+		// Clean up behind ourselves like good little programmers
 		dynamicsWorld->removeRigidBody(fallRigidBody);
 		dynamicsWorld->removeRigidBody(groundRigidBody);
 

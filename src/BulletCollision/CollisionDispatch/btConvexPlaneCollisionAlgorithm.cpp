@@ -53,16 +53,16 @@ btConvexPlaneCollisionAlgorithm::~btConvexPlaneCollisionAlgorithm()
 
 void btConvexPlaneCollisionAlgorithm::collideSingleContact (const btQuaternion& perturbeRot, const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut)
 {
-    const btCollisionObjectWrapper* convexObjWrap = m_isSwapped? body1Wrap : body0Wrap;
+	const btCollisionObjectWrapper* convexObjWrap = m_isSwapped? body1Wrap : body0Wrap;
 	const btCollisionObjectWrapper* planeObjWrap = m_isSwapped? body0Wrap: body1Wrap;
 
 	btConvexShape* convexShape = (btConvexShape*) convexObjWrap->getCollisionShape();
 	btStaticPlaneShape* planeShape = (btStaticPlaneShape*) planeObjWrap->getCollisionShape();
 
-    bool hasCollision = false;
+	bool hasCollision = false;
 	const btVector3& planeNormal = planeShape->getPlaneNormal();
 	const btScalar& planeConstant = planeShape->getPlaneConstant();
-	
+
 	btTransform convexWorldTransform = convexObjWrap->getWorldTransform();
 	btTransform convexInPlaneTrans;
 	convexInPlaneTrans= planeObjWrap->getWorldTransform().inverse() * convexWorldTransform;
@@ -70,7 +70,7 @@ void btConvexPlaneCollisionAlgorithm::collideSingleContact (const btQuaternion& 
 	convexWorldTransform.getBasis()*=btMatrix3x3(perturbeRot);
 	btTransform planeInConvex;
 	planeInConvex= convexWorldTransform.inverse() * planeObjWrap->getWorldTransform();
-	
+
 	btVector3 vtx = convexShape->localGetSupportingVertex(planeInConvex.getBasis()*-planeNormal);
 
 	btVector3 vtxInPlane = convexInPlaneTrans(vtx);
@@ -141,7 +141,7 @@ void btConvexPlaneCollisionAlgorithm::processCollision (const btCollisionObjectW
 		btScalar perturbeAngle;
 		btScalar radius = convexShape->getAngularMotionDisc();
 		perturbeAngle = gContactBreakingThreshold / radius;
-		if ( perturbeAngle > angleLimit ) 
+		if ( perturbeAngle > angleLimit )
 				perturbeAngle = angleLimit;
 
 		btQuaternion perturbeRot(v0,perturbeAngle);

@@ -4,8 +4,8 @@ Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -56,7 +56,7 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 				m_orderNonContactConstraintPool[swapi] = tmp;
 			}
 
-			//contact/friction constraints are not solved more than 
+			//contact/friction constraints are not solved more than
 			if (iteration< infoGlobal.m_numIterations)
 			{
 				for (int j=0; j<numConstraintPool; ++j) {
@@ -84,19 +84,19 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 		for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++)
 		{
 			btSolverConstraint& constraint = m_tmpSolverNonContactConstraintPool[m_orderNonContactConstraintPool[j]];
-			if (iteration < constraint.m_overrideNumSolverIterations) 
+			if (iteration < constraint.m_overrideNumSolverIterations)
 			{
 				btScalar deltaf = resolveSingleConstraintRowGenericSIMD(m_tmpSolverBodyPool[constraint.m_solverBodyIdA],m_tmpSolverBodyPool[constraint.m_solverBodyIdB],constraint);
 				m_deltafNC[j] = deltaf;
 				deltaflengthsqr += deltaf * deltaf;
 			}
 		}
-	} else 
+	} else
 	{
 		for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++)
 		{
 			btSolverConstraint& constraint = m_tmpSolverNonContactConstraintPool[m_orderNonContactConstraintPool[j]];
-			if (iteration < constraint.m_overrideNumSolverIterations) 
+			if (iteration < constraint.m_overrideNumSolverIterations)
 			{
 				btScalar deltaf = resolveSingleConstraintRowGeneric(m_tmpSolverBodyPool[constraint.m_solverBodyIdA],m_tmpSolverBodyPool[constraint.m_solverBodyIdB],constraint);
 				m_deltafNC[j] = deltaf;
@@ -106,23 +106,23 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 	}
 
 
-	if (m_onlyForNoneContact) 
+	if (m_onlyForNoneContact)
 	{
-		if (iteration==0) 
+		if (iteration==0)
 		{
 			for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++) m_pNC[j] = m_deltafNC[j];
 		} else {
 			// deltaflengthsqrprev can be 0 only if the solver solved the problem exactly in the previous iteration. In this case we should have quit, but mainly for debug reason with this 'hack' it is now allowed to continue the calculation
 			btScalar beta = m_deltafLengthSqrPrev>0 ? deltaflengthsqr / m_deltafLengthSqrPrev : 2;
-			if (beta>1) 
+			if (beta>1)
 			{
 				for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++) m_pNC[j] = 0;
-			} else 
+			} else
 			{
 				for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++)
 				{
 					btSolverConstraint& constraint = m_tmpSolverNonContactConstraintPool[m_orderNonContactConstraintPool[j]];
-					if (iteration < constraint.m_overrideNumSolverIterations) 
+					if (iteration < constraint.m_overrideNumSolverIterations)
 					{
 						btScalar additionaldeltaimpulse = beta * m_pNC[j];
 						constraint.m_appliedImpulse = btScalar(constraint.m_appliedImpulse) + additionaldeltaimpulse;
@@ -170,7 +170,7 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 
 					{
 						const btSolverConstraint& solveManifold = m_tmpSolverContactConstraintPool[m_orderTmpConstraintPool[c]];
-						btScalar deltaf = resolveSingleConstraintRowLowerLimitSIMD(m_tmpSolverBodyPool[solveManifold.m_solverBodyIdA],m_tmpSolverBodyPool[solveManifold.m_solverBodyIdB],solveManifold);						
+						btScalar deltaf = resolveSingleConstraintRowLowerLimitSIMD(m_tmpSolverBodyPool[solveManifold.m_solverBodyIdA],m_tmpSolverBodyPool[solveManifold.m_solverBodyIdB],solveManifold);
 						m_deltafC[c] = deltaf;
 						deltaflengthsqr += deltaf*deltaf;
 						totalImpulse = solveManifold.m_appliedImpulse;
@@ -355,18 +355,18 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 
 
 
-	if (!m_onlyForNoneContact) 
+	if (!m_onlyForNoneContact)
 	{
-		if (iteration==0) 
+		if (iteration==0)
 		{
 			for (int j=0;j<m_tmpSolverNonContactConstraintPool.size();j++) m_pNC[j] = m_deltafNC[j];
 			for (int j=0;j<m_tmpSolverContactConstraintPool.size();j++) m_pC[j] = m_deltafC[j];
 			for (int j=0;j<m_tmpSolverContactFrictionConstraintPool.size();j++) m_pCF[j] = m_deltafCF[j];
-			if ( (infoGlobal.m_solverMode & SOLVER_SIMD) ==0 || (infoGlobal.m_solverMode & SOLVER_INTERLEAVE_CONTACT_AND_FRICTION_CONSTRAINTS) == 0 ) 
+			if ( (infoGlobal.m_solverMode & SOLVER_SIMD) ==0 || (infoGlobal.m_solverMode & SOLVER_INTERLEAVE_CONTACT_AND_FRICTION_CONSTRAINTS) == 0 )
 			{
 				for (int j=0;j<m_tmpSolverContactRollingFrictionConstraintPool.size();j++) m_pCRF[j] = m_deltafCRF[j];
 			}
-		} else 
+		} else
 		{
 			// deltaflengthsqrprev can be 0 only if the solver solved the problem exactly in the previous iteration. In this case we should have quit, but mainly for debug reason with this 'hack' it is now allowed to continue the calculation
 			btScalar beta = m_deltafLengthSqrPrev>0 ? deltaflengthsqr / m_deltafLengthSqrPrev : 2;

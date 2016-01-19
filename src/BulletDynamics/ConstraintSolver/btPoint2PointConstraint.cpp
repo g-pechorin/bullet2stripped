@@ -4,8 +4,8 @@ Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -36,7 +36,7 @@ btPoint2PointConstraint::btPoint2PointConstraint(btRigidBody& rbA,const btVector
 m_flags(0),
 m_useSolveConstraintObsolete(false)
 {
-	
+
 }
 
 void	btPoint2PointConstraint::buildJacobian()
@@ -101,9 +101,9 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 	 //retrieve matrices
 
 	// anchor points in global coordinates with respect to body PORs.
-   
-    // set jacobian
-    info->m_J1linearAxis[0] = 1;
+
+	// set jacobian
+	info->m_J1linearAxis[0] = 1;
 	info->m_J1linearAxis[info->rowskip+1] = 1;
 	info->m_J1linearAxis[2*info->rowskip+2] = 1;
 
@@ -115,13 +115,13 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 		btVector3 a1neg = -a1;
 		a1neg.getSkewSymmetricMatrix(angular0,angular1,angular2);
 	}
-    
+
 	info->m_J2linearAxis[0] = -1;
-    info->m_J2linearAxis[info->rowskip+1] = -1;
-    info->m_J2linearAxis[2*info->rowskip+2] = -1;
-	
+	info->m_J2linearAxis[info->rowskip+1] = -1;
+	info->m_J2linearAxis[2*info->rowskip+2] = -1;
+
 	btVector3 a2 = body1_trans.getBasis()*getPivotInB();
-   
+
 	{
 	//	btVector3 a2n = -a2;
 		btVector3* angular0 = (btVector3*)(info->m_J2angularAxis);
@@ -129,18 +129,18 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 		btVector3* angular2 = (btVector3*)(info->m_J2angularAxis+2*info->rowskip);
 		a2.getSkewSymmetricMatrix(angular0,angular1,angular2);
 	}
-    
 
 
-    // set right hand side
+
+	// set right hand side
 	btScalar currERP = (m_flags & BT_P2P_FLAGS_ERP) ? m_erp : info->erp;
-    btScalar k = info->fps * currERP;
-    int j;
+	btScalar k = info->fps * currERP;
+	int j;
 	for (j=0; j<3; j++)
-    {
-        info->m_constraintError[j*info->rowskip] = k * (a2[j] + body1_trans.getOrigin()[j] - a1[j] - body0_trans.getOrigin()[j]);
+	{
+		info->m_constraintError[j*info->rowskip] = k * (a2[j] + body1_trans.getOrigin()[j] - a1[j] - body0_trans.getOrigin()[j]);
 		//printf("info->m_constraintError[%d]=%f\n",j,info->m_constraintError[j]);
-    }
+	}
 	if(m_flags & BT_P2P_FLAGS_CFM)
 	{
 		for (j=0; j<3; j++)
@@ -151,7 +151,7 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 
 	btScalar impulseClamp = m_setting.m_impulseClamp;//
 	for (j=0; j<3; j++)
-    {
+	{
 		if (m_setting.m_impulseClamp > 0)
 		{
 			info->m_lowerLimit[j*info->rowskip] = -impulseClamp;
@@ -159,7 +159,7 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 		}
 	}
 	info->m_damping = m_setting.m_damping;
-	
+
 }
 
 
@@ -170,7 +170,7 @@ void	btPoint2PointConstraint::updateRHS(btScalar	timeStep)
 
 }
 
-///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
+///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5).
 ///If no axis is provided, it uses the default axis for this constraint.
 void btPoint2PointConstraint::setParam(int num, btScalar value, int axis)
 {
@@ -184,22 +184,22 @@ void btPoint2PointConstraint::setParam(int num, btScalar value, int axis)
 		{
 			case BT_CONSTRAINT_ERP :
 			case BT_CONSTRAINT_STOP_ERP :
-				m_erp = value; 
+				m_erp = value;
 				m_flags |= BT_P2P_FLAGS_ERP;
 				break;
 			case BT_CONSTRAINT_CFM :
 			case BT_CONSTRAINT_STOP_CFM :
-				m_cfm = value; 
+				m_cfm = value;
 				m_flags |= BT_P2P_FLAGS_CFM;
 				break;
-			default: 
+			default:
 				btAssertConstrParams(0);
 		}
 	}
 }
 
 ///return the local value of parameter
-btScalar btPoint2PointConstraint::getParam(int num, int axis) const 
+btScalar btPoint2PointConstraint::getParam(int num, int axis) const
 {
 	btScalar retVal(SIMD_INFINITY);
 	if(axis != -1)
@@ -213,17 +213,17 @@ btScalar btPoint2PointConstraint::getParam(int num, int axis) const
 			case BT_CONSTRAINT_ERP :
 			case BT_CONSTRAINT_STOP_ERP :
 				btAssertConstrParams(m_flags & BT_P2P_FLAGS_ERP);
-				retVal = m_erp; 
+				retVal = m_erp;
 				break;
 			case BT_CONSTRAINT_CFM :
 			case BT_CONSTRAINT_STOP_CFM :
 				btAssertConstrParams(m_flags & BT_P2P_FLAGS_CFM);
-				retVal = m_cfm; 
+				retVal = m_cfm;
 				break;
-			default: 
+			default:
 				btAssertConstrParams(0);
 		}
 	}
 	return retVal;
 }
-	
+

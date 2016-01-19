@@ -4,8 +4,8 @@ Copyright (c) 2003-2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -30,15 +30,15 @@ subject to the following restrictions:
 class btLemkeSolver : public btMLCPSolverInterface
 {
 protected:
-	
+
 public:
 
 	btScalar	m_maxValue;
 	int			m_debugLevel;
 	int			m_maxLoops;
 	bool		m_useLoHighBounds;
-	
-	
+
+
 
 	btLemkeSolver()
 		:m_maxValue(100000),
@@ -49,7 +49,7 @@ public:
 	}
 	virtual bool solveMLCP(const btMatrixXu & A, const btVectorXu & b, btVectorXu& x, const btVectorXu & lo,const btVectorXu & hi,const btAlignedObjectArray<int>& limitDependency, int numIterations, bool useSparsity = true)
 	{
-		
+
 		if (m_useLoHighBounds)
 		{
 
@@ -57,7 +57,7 @@ public:
 		int n = A.rows();
 		if (0==n)
 			return true;
-		
+
 		bool fail = false;
 
 		btVectorXu solution(n);
@@ -136,9 +136,9 @@ public:
 				}
 			}
 
-	
 
-	
+
+
 
 			for (int row=0;row<n;row++)
 				{
@@ -200,7 +200,7 @@ public:
 		btMatrixXu x1;
 
 		x1 = B*(y1_b1);
-			
+
 		for (int row=0;row<n;row++)
 		{
 			solution[row] = x1(row,0);//n];
@@ -210,7 +210,7 @@ public:
 		int errorIndexMin = -1;
 		float errorValueMax = -1e30;
 		float errorValueMin = 1e30;
-		
+
 		for (int i=0;i<n;i++)
 		{
 			x[i] = solution[i];
@@ -221,8 +221,8 @@ public:
 				x.setZero();
 				return false;
 			}
-			
-			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver 
+
+			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver
 			//we need to figure out why it happens, and fix it, or detect it properly)
 			if (x[i]>m_maxValue)
 			{
@@ -261,12 +261,12 @@ public:
 		}
 		return !fail;
 	} else
-		
+
 	{
 			int dimension = A.rows();
 		if (0==dimension)
 			return true;
-		
+
 //		printf("================ solving using Lemke/Newton/Fixpoint\n");
 
 		btVectorXu q;
@@ -275,22 +275,22 @@ public:
 		{
 			q[row] = -b[row];
 		}
-		
+
 		btLemkeAlgorithm lemke(A,q,m_debugLevel);
-		
-		
+
+
 		lemke.setSystem(A,q);
-		
+
 		btVectorXu solution = lemke.solve(m_maxLoops);
-		
+
 		//check solution
-		
+
 		bool fail = false;
 		int errorIndexMax = -1;
 		int errorIndexMin = -1;
 		float errorValueMax = -1e30;
 		float errorValueMin = 1e30;
-		
+
 		for (int i=0;i<dimension;i++)
 		{
 			x[i] = solution[i+dimension];
@@ -300,8 +300,8 @@ public:
 				x.setZero();
 				return false;
 			}
-			
-			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver 
+
+			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver
 			//we need to figure out why it happens, and fix it, or detect it properly)
 			if (x[i]>m_maxValue)
 			{

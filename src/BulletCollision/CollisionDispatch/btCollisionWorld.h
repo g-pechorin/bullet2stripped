@@ -4,8 +4,8 @@ Copyright (c) 2003-2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -31,14 +31,14 @@ subject to the following restrictions:
  *
  * @subsection step2 Step 2: Building
  * Bullet has multiple build systems, including premake, cmake and autotools. Premake and cmake support all platforms.
- * Premake is included in the Bullet/build folder for Windows, Mac OSX and Linux. 
- * Under Windows you can click on Bullet/build/vs2010.bat to create Microsoft Visual Studio projects. 
+ * Premake is included in the Bullet/build folder for Windows, Mac OSX and Linux.
+ * Under Windows you can click on Bullet/build/vs2010.bat to create Microsoft Visual Studio projects.
  * On Mac OSX and Linux you can open a terminal and generate Makefile, codeblocks or Xcode4 projects:
  * cd Bullet/build
  * ./premake4_osx gmake or ./premake4_linux gmake or ./premake4_linux64 gmake or (for Mac) ./premake4_osx xcode4
  * cd Bullet/build/gmake
  * make
- * 
+ *
  * An alternative to premake is cmake. You can download cmake from http://www.cmake.org
  * cmake can autogenerate projectfiles for Microsoft Visual Studio, Apple Xcode, KDevelop and Unix Makefiles.
  * The easiest is to run the CMake cmake-gui graphical user interface and choose the options and generate projectfiles.
@@ -47,12 +47,12 @@ subject to the following restrictions:
  * cmake . -G Xcode
  * cmake . -G "Unix Makefiles"
  * Although cmake is recommended, you can also use autotools for UNIX: ./autogen.sh ./configure to create a Makefile and then run make.
- * 
+ *
  * @subsection step3 Step 3: Testing demos
  * Try to run and experiment with BasicDemo executable as a starting point.
  * Bullet can be used in several ways, as Full Rigid Body simulation, as Collision Detector Library or Low Level / Snippets like the GJK Closest Point calculation.
  * The Dependencies can be seen in this documentation under Directories
- * 
+ *
  * @subsection step4 Step 4: Integrating in your application, full Rigid Body and Soft Body simulation
  * Check out BasicDemo how to create a btDynamicsWorld, btRigidBody and btCollisionShape, Stepping the simulation and synchronizing your graphics object transform.
  * Check out SoftDemo how to use soft body dynamics, using btSoftRigidDynamicsWorld.
@@ -64,10 +64,10 @@ subject to the following restrictions:
  *
  * @section copyright Copyright
  * For up-to-data information and copyright and contributors list check out the Bullet_User_Manual.pdf
- * 
+ *
  */
- 
- 
+
+
 
 #ifndef BT_COLLISION_WORLD_H
 #define BT_COLLISION_WORLD_H
@@ -88,11 +88,11 @@ class btSerializer;
 class btCollisionWorld
 {
 
-	
+
 protected:
 
 	btAlignedObjectArray<btCollisionObject*>	m_collisionObjects;
-	
+
 	btDispatcher*	m_dispatcher1;
 
 	btDispatcherInfo	m_dispatchInfo;
@@ -153,7 +153,7 @@ public:
 	///it can be useful to use if you perform ray tests without collision detection/simulation
 	virtual void	computeOverlappingPairs();
 
-	
+
 	virtual void	setDebugDrawer(btIDebugDraw*	debugDrawer)
 	{
 			m_debugDrawer = debugDrawer;
@@ -175,14 +175,14 @@ public:
 	{
 		int	m_shapePart;
 		int	m_triangleIndex;
-		
+
 		//const btCollisionShape*	m_shapeTemp;
 		//const btTransform*	m_shapeLocalTransform;
 	};
 
 	struct	LocalRayResult
 	{
-		LocalRayResult(const btCollisionObject*	collisionObject, 
+		LocalRayResult(const btCollisionObject*	collisionObject,
 			LocalShapeInfo*	localShapeInfo,
 			const btVector3&		hitNormalLocal,
 			btScalar hitFraction)
@@ -252,12 +252,12 @@ public:
 
 		btVector3	m_hitNormalWorld;
 		btVector3	m_hitPointWorld;
-			
+
 		virtual	btScalar	addSingleResult(LocalRayResult& rayResult,bool normalInWorldSpace)
 		{
 			//caller already does the filter on the m_closestHitFraction
 			btAssert(rayResult.m_hitFraction <= m_closestHitFraction);
-			
+
 			m_closestHitFraction = rayResult.m_hitFraction;
 			m_collisionObject = rayResult.m_collisionObject;
 			if (normalInWorldSpace)
@@ -289,7 +289,7 @@ public:
 		btAlignedObjectArray<btVector3>	m_hitNormalWorld;
 		btAlignedObjectArray<btVector3>	m_hitPointWorld;
 		btAlignedObjectArray<btScalar> m_hitFractions;
-			
+
 		virtual	btScalar	addSingleResult(LocalRayResult& rayResult,bool normalInWorldSpace)
 		{
 			m_collisionObject = rayResult.m_collisionObject;
@@ -315,7 +315,7 @@ public:
 
 	struct LocalConvexResult
 	{
-		LocalConvexResult(const btCollisionObject*	hitCollisionObject, 
+		LocalConvexResult(const btCollisionObject*	hitCollisionObject,
 			LocalShapeInfo*	localShapeInfo,
 			const btVector3&		hitNormalLocal,
 			const btVector3&		hitPointLocal,
@@ -342,7 +342,7 @@ public:
 		btScalar	m_closestHitFraction;
 		short int	m_collisionFilterGroup;
 		short int	m_collisionFilterMask;
-		
+
 		ConvexResultCallback()
 			:m_closestHitFraction(btScalar(1.)),
 			m_collisionFilterGroup(btBroadphaseProxy::DefaultFilter),
@@ -353,13 +353,13 @@ public:
 		virtual ~ConvexResultCallback()
 		{
 		}
-		
+
 		bool	hasHit() const
 		{
 			return (m_closestHitFraction < btScalar(1.));
 		}
 
-		
+
 
 		virtual bool needsCollision(btBroadphaseProxy* proxy0) const
 		{
@@ -386,12 +386,12 @@ public:
 		btVector3	m_hitNormalWorld;
 		btVector3	m_hitPointWorld;
 		const btCollisionObject*	m_hitCollisionObject;
-		
+
 		virtual	btScalar	addSingleResult(LocalConvexResult& convexResult,bool normalInWorldSpace)
 		{
 //caller already does the filter on the m_closestHitFraction
 			btAssert(convexResult.m_hitFraction <= m_closestHitFraction);
-						
+
 			m_closestHitFraction = convexResult.m_hitFraction;
 			m_hitCollisionObject = convexResult.m_hitCollisionObject;
 			if (normalInWorldSpace)
@@ -412,7 +412,7 @@ public:
 	{
 		short int	m_collisionFilterGroup;
 		short int	m_collisionFilterMask;
-		
+
 		ContactResultCallback()
 			:m_collisionFilterGroup(btBroadphaseProxy::DefaultFilter),
 			m_collisionFilterMask(btBroadphaseProxy::AllFilter)
@@ -422,7 +422,7 @@ public:
 		virtual ~ContactResultCallback()
 		{
 		}
-		
+
 		virtual bool needsCollision(btBroadphaseProxy* proxy0) const
 		{
 			bool collides = (proxy0->m_collisionFilterGroup & m_collisionFilterMask) != 0;
@@ -442,7 +442,7 @@ public:
 
 	/// rayTest performs a raycast on all objects in the btCollisionWorld, and calls the resultCallback
 	/// This allows for several queries: first hit, all hits, any hit, dependent on the value returned by the callback.
-	virtual void rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, RayResultCallback& resultCallback) const; 
+	virtual void rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, RayResultCallback& resultCallback) const;
 
 	/// convexTest performs a swept convex cast on all objects in the btCollisionWorld, and calls the resultCallback
 	/// This allows for several queries: first hit, all hits, any hit, dependent on the value return by the callback.
@@ -507,7 +507,7 @@ public:
 	{
 		return m_dispatchInfo;
 	}
-	
+
 	bool	getForceUpdateAllAabbs() const
 	{
 		return m_forceUpdateAllAabbs;
