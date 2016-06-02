@@ -15,7 +15,7 @@ In your **main** `.cpp` file;
 
 # bullet2stripped
 
-This is a fork of "Bullet 2 Stripped" which was itself a fork of Bullet 2.82 (by the original creator)
+This is a fork of "Bullet 2 Stripped" which was itself a fork of Bullet 2.82 (by the original creator before)
 Peter LaValle forked it to get a CMake build which could be embedded with `add_subdirectory(...)` into another project.
 
 Since that time Peter LaValle has assembled [the script](scala-script/) to prepare [palBullet282](palBullet282.hpp) which contains the whole physics library in one "stb-style" `.hpp` header.
